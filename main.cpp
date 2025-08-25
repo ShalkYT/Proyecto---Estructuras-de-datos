@@ -15,7 +15,6 @@ int* subsecuencias = nullptr;
 int* tamaños = nullptr;
 
 #include <cstdlib>
-using namespace std;
 
 //Funcion para manejar matriz
 
@@ -354,18 +353,6 @@ void procesarComando(const string& comando, const string& parametros) {
         }
         cout << "Secuencias codificadas y almacenadas en " << parametros << "\n";
     }
-    else if (comando == "decodificar") {
-        if (parametros.empty()) {
-            cout << "Error: Falta el nombre del archivo .fabin\n";
-            return;
-        }
-        if (!archivoExiste(parametros)) {
-            cout << "No se pueden cargar las secuencias desde " << parametros << "\n";
-            return;
-        }
-        secuenciasCargadas = true;
-        cout << "Secuencias decodificadas desde " << parametros << " y cargadas en memoria.\n";
-    }
     else if (comando == "ruta_mas_corta") {
         if (!secuenciasCargadas) {
             cout << "No hay secuencias cargadas en memoria.\n";
@@ -403,7 +390,6 @@ int main() {
     cout << "Escriba 'ayuda' para ver l os comandos disponibles\n";
 
         while (true) {
-
         cout << "$ ";
         getline(cin, entrada);
 
