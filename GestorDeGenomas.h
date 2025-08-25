@@ -7,7 +7,7 @@
 class GestorDeGenomas{
 public:
     void AñadirSecuencias(Secuencia S);
-
+    void LimpiarSecuencias();
 private:
     std::vector<Secuencia> VectorSecuencias;  
 
