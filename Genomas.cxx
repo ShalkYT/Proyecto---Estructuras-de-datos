@@ -1,5 +1,9 @@
 #include "Genomas.h"
 
-void AgregarFila(string NuevaFila){
+void Genomas::AgregarFila(std::string NuevaFila){
     Filas.push_back(NuevaFila);
+}
+
+void Genomas::SetTamañoMax(int NewTamaño){
+    Genomas::TamañoMax = NewTamaño;
 }

@@ -1,13 +1,19 @@
-#ifndef GENOMAS__H
-#define GENOMAS__H
+#ifndef GENOMAS_H
+#define GENOMAS_H
 
 #include <vector>
+#include <string>
 
-std::vector<string> Filas;
-int TamañoMax;
+class Genomas{
+public:
 
-void AgregarFila(string NuevaFila);
+    void AgregarFila(std::string NuevaFila);
+    void SetTamañoMax(int NewTamaño);
+
+private:
+    std::vector<std::string> Filas;
+    int TamañoMax;
+};
 
 
-
-#endif // GENOMAS__H
+#endif // GENOMAS_H
