@@ -9,6 +9,6 @@ public:
     void AñadirGenomas(Genomas G);
 
 private:
-    std::vector<Genomas> Genomas;
+    std::vector<Genomas> VectorGenomas;
 }
 #endif // SECUENCIA_H

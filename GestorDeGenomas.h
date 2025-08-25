@@ -9,7 +9,7 @@ public:
     void AñadirSecuencias(Secuencia S);
 
 private:
-    std::vector<Secuencia> Secuencias;  
+    std::vector<Secuencia> VectorSecuencias;  
 
 };
 
