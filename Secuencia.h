@@ -10,5 +10,5 @@ public:
 
 private:
     std::vector<Genomas> VectorGenomas;
-}
+};
 #endif // SECUENCIA_H
