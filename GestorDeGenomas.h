@@ -8,6 +8,8 @@ class GestorDeGenomas{
 public:
     void AñadirSecuencias(Secuencia S);
     void LimpiarSecuencias();
+    std::vector<Secuencia> getSecuencias();
+    void ListarSecuencias();
 private:
     std::vector<Secuencia> VectorSecuencias;  
 
