@@ -6,8 +6,12 @@
 
 class Secuencia{ 
 public:
-    void AñadirGenomas(Genomas G);
+    void AñadirGenomas(std::string Fila);
     void SetNombre(std::string Nombre);
+    std::string GetNombre();
+    void ListarGenomas();
+    int ContarBases();
+    bool GenomasCompletos();
 
 private:
     std::vector<Genomas> VectorGenomas;
