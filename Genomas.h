@@ -6,7 +6,9 @@
 class Genomas{
 public:
     void SetFila(std::string Fila);
-
+    std::string GetFila();
+    int ContarBases();
+    bool EsCompleta();
 private:
     std::string Fila;
 };
