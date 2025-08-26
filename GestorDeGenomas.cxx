@@ -29,3 +29,32 @@ void GestorDeGenomas::ListarSecuencias(){
 std::vector<Secuencia> GestorDeGenomas::getSecuencias(){
     return VectorSecuencias;
 }
+
+void GestorDeGenomas::Histograma(std::string Nombre){
+    if(VectorSecuencias.empty()){
+        std::cout << "No hay secuencias cargadas en memoria.\n";
+        return;
+    }
+
+    int i;
+    bool encontro = false;
+    std::vector<Secuencia>::iterator it = VectorSecuencias.begin();
+    for(i = 0; it != VectorSecuencias.end(); it++){
+        if(Nombre == (it->GetNombre())){
+            encontro = true;
+            break;
+        }
+        i++;
+    }
+    it = VectorSecuencias.begin();
+
+    if(encontro){
+        std::vector<int> Histograma = (it+i)->histogramaSecuencia();
+        std::vector<int>::iterator aux = Histograma.begin();
+        std::cout << "(LA SECUENCIA EXISTE)";
+        std::cout << "A : " << *(aux) << "\nC : " << *(aux+1) << "\nG : " << *(aux+2) << "\nT : " << *(aux+3) << "\nU : " << *(aux+4) << "\n- : " << *(aux+5); 
+
+    }else{
+        std::cout << "(LA SECUENCIA NO EXISTE)\n";
+    }
+}

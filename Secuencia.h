@@ -12,6 +12,7 @@ public:
     void ListarGenomas();
     int ContarBases();
     bool GenomasCompletos();
+    std::vector<int> histogramaSecuencia();
 
 private:
     std::vector<Genomas> VectorGenomas;

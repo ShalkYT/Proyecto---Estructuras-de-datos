@@ -151,7 +151,15 @@ void ProcesarComando(std::string comando,std::string parametros){
         Cargar(parametros);
     }
     else if (comando == "listar_secuencias") {
+        
         Gestor.ListarSecuencias();
+    }
+    else if(comando == "histograma"){
+        if(parametros.empty()){
+            std::cout << "Error: Falta la descripción de la secuencia\n";
+            return;
+        }
+        Gestor.Histograma(parametros);
     }
 
 }

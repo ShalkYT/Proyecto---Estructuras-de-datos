@@ -2,6 +2,7 @@
 #define GENOMAS_H
 
 #include <string>
+#include <vector>
 
 class Genomas{
 public:
@@ -9,6 +10,7 @@ public:
     std::string GetFila();
     int ContarBases();
     bool EsCompleta();
+    std::vector<int> ConteoHistograma();
 private:
     std::string Fila;
 };

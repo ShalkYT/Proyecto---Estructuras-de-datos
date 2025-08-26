@@ -10,6 +10,7 @@ public:
     void LimpiarSecuencias();
     std::vector<Secuencia> getSecuencias();
     void ListarSecuencias();
+    void Histograma(std::string Nombre);
 private:
     std::vector<Secuencia> VectorSecuencias;  
 

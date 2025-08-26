@@ -45,3 +45,20 @@ bool Secuencia::GenomasCompletos(){
 
     return Completos;
 }
+
+std::vector<int> Secuencia::histogramaSecuencia(){
+    std::vector<int> Count(6,0);
+    std::vector<int>::iterator itHistograma = Count.begin();
+    std::vector<Genomas>::iterator itGenomas;
+    for(itGenomas = VectorGenomas.begin(); itGenomas != VectorGenomas.end(); itGenomas++){
+        std::vector<int>::iterator aux = (itGenomas->ConteoHistograma()).begin();
+        *(itHistograma) += *(aux);
+        *(itHistograma + 1) += *(aux + 1);
+        *(itHistograma + 2) += *(aux + 2);
+        *(itHistograma + 3) += *(aux + 3);
+        *(itHistograma + 4) += *(aux + 4);
+        *(itHistograma + 5) += *(aux + 5);
+    }
+
+    return Count;
+}
