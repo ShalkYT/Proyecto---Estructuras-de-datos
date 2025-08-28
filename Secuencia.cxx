@@ -51,7 +51,8 @@ std::vector<int> Secuencia::histogramaSecuencia(){
     std::vector<int>::iterator itHistograma = Count.begin();
     std::vector<Genomas>::iterator itGenomas;
     for(itGenomas = VectorGenomas.begin(); itGenomas != VectorGenomas.end(); itGenomas++){
-        std::vector<int>::iterator aux = (itGenomas->ConteoHistograma()).begin();
+        std::vector<int> temp = itGenomas->ConteoHistograma();
+        std::vector<int>::iterator aux = temp.begin();
         *(itHistograma) += *(aux);
         *(itHistograma + 1) += *(aux + 1);
         *(itHistograma + 2) += *(aux + 2);
@@ -59,6 +60,16 @@ std::vector<int> Secuencia::histogramaSecuencia(){
         *(itHistograma + 4) += *(aux + 4);
         *(itHistograma + 5) += *(aux + 5);
     }
-
     return Count;
+}
+
+int Secuencia::Cantidad_Subsecuencias(std::string Subsecuencia){
+    std::vector<Genomas>::iterator it;
+    int Contador = 0;
+
+    for(it = VectorGenomas.begin(); it != VectorGenomas.end(); it++){
+        Contador += it->Cantidad_Subsecuencias(Subsecuencia);
+    }
+
+    return Contador;
 }

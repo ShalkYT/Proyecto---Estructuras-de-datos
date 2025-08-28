@@ -28,8 +28,9 @@ int main(){
 
             // Convertir comando a minúsculas
             for (char &c : comando) c = tolower(c);
-
+            LimpiarPantalla();
             ProcesarComando(comando, params);
+            
         }
 }
 
@@ -141,9 +142,23 @@ void Cargar(std::string Nombre){
             break;
         }
     }
+
+    int temp = (Gestor.getSecuencias()).size();
+
+    if(temp == 0){
+        std::cout << Nombre <<" no contiene ninguna secuencia.\n";
+    }
+    else if(temp == 1){
+        std::cout <<"1 secuencia cargada correctamente desde " << Nombre << "\n";
+    }else{
+        std::cout << temp <<" secuencias cargadas correctamente desde " << Nombre << "\n";
+    }
 }
 
 void ProcesarComando(std::string comando,std::string parametros){
+
+    int temp;
+
     if (comando == "ayuda") {
         ListarComandos(parametros);
     }
@@ -151,7 +166,6 @@ void ProcesarComando(std::string comando,std::string parametros){
         Cargar(parametros);
     }
     else if (comando == "listar_secuencias") {
-        
         Gestor.ListarSecuencias();
     }
     else if(comando == "histograma"){
@@ -161,5 +175,16 @@ void ProcesarComando(std::string comando,std::string parametros){
         }
         Gestor.Histograma(parametros);
     }
-
+    else if(comando == "es_subsecuencia"){
+        if(((Gestor.getSecuencias()).size()) == 0){
+            std::cout << "No hay secuencias cargadas.\n";
+        }else{
+            temp = Gestor.Cantidad_Subsecuencias(parametros);
+            if(temp == 0){
+                std::cout << "La subsecuencia dada no existe dentro de las secuencias cargadas en memoria.\n";
+            }else{
+                std::cout << "La subsecuencia dada se repite " << temp << " veces dentro de las secuencias cargadas en memoria\n";
+            }
+        }
+    }
 }

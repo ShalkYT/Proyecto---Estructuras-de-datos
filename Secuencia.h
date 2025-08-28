@@ -13,7 +13,7 @@ public:
     int ContarBases();
     bool GenomasCompletos();
     std::vector<int> histogramaSecuencia();
-
+    int Cantidad_Subsecuencias(std::string Subsecuencia);
 private:
     std::vector<Genomas> VectorGenomas;
     std::string Nombre;

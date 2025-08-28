@@ -11,9 +11,10 @@ public:
     std::vector<Secuencia> getSecuencias();
     void ListarSecuencias();
     void Histograma(std::string Nombre);
+    int Cantidad_Subsecuencias(std::string Subsecuencia);
 private:
     std::vector<Secuencia> VectorSecuencias;  
-
+    
 };
 
 #endif // GESTOR_DE_GENOMAS_H
