@@ -67,3 +67,12 @@ int GestorDeGenomas::Cantidad_Subsecuencias(std::string Subsecuencia){
     }
     return Contador;
 }
+
+int GestorDeGenomas::Enmascarar_Subsecuencias(std::string Subsecuencia){
+    std::vector<Secuencia>::iterator it;
+    int Contador = 0;
+    for(it = VectorSecuencias.begin(); it != VectorSecuencias.end(); it++){
+        Contador += it->Enmascarar_Subsecuencias(Subsecuencia);
+    }
+    return Contador;
+}

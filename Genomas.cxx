@@ -50,3 +50,13 @@ int Genomas::Cantidad_Subsecuencias(std::string subsecuencia){
 
     return Count;
 }
+
+int Genomas::Enmascarar_Subsecuencias(std::string Subsecuencia){
+    int Count = 0;
+
+    for(size_t pos = Fila.find(Subsecuencia) ; pos != std::string::npos ; pos = Fila.find(Subsecuencia, pos + 1 )){
+        Count++;
+        Fila.replace(pos,Subsecuencia.size(),std::string(Subsecuencia.length(), 'X'));
+    }
+    return Count;
+}

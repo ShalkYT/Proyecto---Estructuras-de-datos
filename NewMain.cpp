@@ -30,7 +30,6 @@ int main(){
             for (char &c : comando) c = tolower(c);
             LimpiarPantalla();
             ProcesarComando(comando, params);
-            
         }
 }
 
@@ -153,6 +152,43 @@ void Cargar(std::string Nombre){
     }else{
         std::cout << temp <<" secuencias cargadas correctamente desde " << Nombre << "\n";
     }
+
+    Cargar.close();
+
+}
+
+void Guardar(std::string Nombre){
+    if (Nombre.empty()) {
+        std::cout << "ERROR: Falta el nombre del archivo\n";
+        return;
+    }
+
+    if((Gestor.getSecuencias()).empty()){
+        std::cout << "ERROR: no hay secuencias cargtadas en memoria";
+        return;
+    }
+
+    std::ofstream Guardar(Nombre);
+
+    if(!Guardar.is_open()){
+        std::cout << Nombre << "ERROR guardando en el archivo " << Nombre << "\n";
+        return;
+    }
+
+    std::vector<Secuencia> temp = Gestor.getSecuencias();
+
+
+    for(std::vector<Secuencia>::iterator teit = temp.begin(); teit != temp.end(); teit++){
+        Guardar << ">" << teit->GetNombre() << "\n";
+        std::vector<Genomas> sub_temp = teit->GetGenomas();
+        for(std::vector<Genomas>::iterator suit = sub_temp.begin(); suit != sub_temp.end() ; suit++){
+            Guardar << suit->GetFila() <<"\n";
+        }
+    }
+
+    std::cout << "Las secuencias han sido guardadas en " << Nombre << "\n";
+    Guardar.close();
+
 }
 
 void ProcesarComando(std::string comando,std::string parametros){
@@ -186,5 +222,23 @@ void ProcesarComando(std::string comando,std::string parametros){
                 std::cout << "La subsecuencia dada se repite " << temp << " veces dentro de las secuencias cargadas en memoria\n";
             }
         }
+    }
+    else if(comando == "enmascarar"){
+        if(((Gestor.getSecuencias()).size()) == 0){
+            std::cout << "No hay secuencias cargadas.\n";
+        }else{
+            temp = Gestor.Enmascarar_Subsecuencias(parametros);
+            if(temp == 0){
+                std::cout << "La subsecuencia dada no existe dentro de las secuencias cargadas en memoria, por lo tanto no se enmascaro nada.\n";
+            }else{
+                std::cout<< temp << " subsecuencias han sido enmascaradas de las secuencias cargadas en memoria\n";
+            }
+        }
+    }
+    else if(comando == "guardar") {
+        Guardar(parametros);
+    }
+    else if(comando == "salir"){
+        exit(0);
     }
 }

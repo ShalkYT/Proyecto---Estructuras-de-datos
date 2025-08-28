@@ -15,6 +15,10 @@ std::string Secuencia::GetNombre(){
     return Nombre;
 }
 
+std::vector<Genomas> Secuencia::GetGenomas(){
+    return VectorGenomas;
+}
+
 void Secuencia::ListarGenomas(){
     std::vector<Genomas>::iterator it;
     for(it = VectorGenomas.begin(); it != VectorGenomas.end(); it++){
@@ -69,6 +73,17 @@ int Secuencia::Cantidad_Subsecuencias(std::string Subsecuencia){
 
     for(it = VectorGenomas.begin(); it != VectorGenomas.end(); it++){
         Contador += it->Cantidad_Subsecuencias(Subsecuencia);
+    }
+
+    return Contador;
+}
+
+int Secuencia::Enmascarar_Subsecuencias(std::string Subsecuencia){
+    std::vector<Genomas>::iterator it;
+    int Contador = 0;
+
+    for(it = VectorGenomas.begin(); it != VectorGenomas.end(); it++){
+        Contador += it->Enmascarar_Subsecuencias(Subsecuencia);
     }
 
     return Contador;

@@ -12,6 +12,7 @@ public:
     void ListarSecuencias();
     void Histograma(std::string Nombre);
     int Cantidad_Subsecuencias(std::string Subsecuencia);
+    int Enmascarar_Subsecuencias(std::string Subsecuencia);
 private:
     std::vector<Secuencia> VectorSecuencias;  
     

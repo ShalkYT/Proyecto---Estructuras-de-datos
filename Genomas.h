@@ -13,6 +13,7 @@ public:
     bool EsCompleta();
     std::vector<int> ConteoHistograma();
     int Cantidad_Subsecuencias(std::string subsecuencia);
+    int Enmascarar_Subsecuencias(std::string Subsecuencia);
 private:
     std::string Fila;
 };
