@@ -18,5 +18,4 @@ private:
     std::string Fila;
 };
 
-
 #endif // GENOMAS_H

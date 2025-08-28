@@ -19,13 +19,6 @@ std::vector<Genomas> Secuencia::GetGenomas(){
     return VectorGenomas;
 }
 
-void Secuencia::ListarGenomas(){
-    std::vector<Genomas>::iterator it;
-    for(it = VectorGenomas.begin(); it != VectorGenomas.end(); it++){
-        std::cout << it->GetFila() << "\n";
-    }
-}
-
 int Secuencia::ContarBases(){
     int Count = 0;
 
