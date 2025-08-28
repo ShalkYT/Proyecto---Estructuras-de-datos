@@ -2,12 +2,10 @@ CXX = g++
 CXXFLAGS = -Wall -std=c++17
 
 # No es utilizado actualmente
-# DEPENDENCYS = 
-PROGRAMS = main
-# all: $(PROGRAMS)
+DEPENDENCYS = Genomas.cxx Secuencia.cxx GestorDeGenomas.cxx
 
-%: %.cpp
-	$(CXX) $(CXXFLAGS) $(DEPENDENCYS) main.cpp -o main
+NewMain:
+	$(CXX) $(CXXFLAGS) $(DEPENDENCYS) NewMain.cpp -o main
 
 clear:
-	rm -f $(PROGRAMS)
+	rm -f main
