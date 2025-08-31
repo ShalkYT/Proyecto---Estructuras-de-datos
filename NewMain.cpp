@@ -1,5 +1,6 @@
 #include <iostream>
-#include <string>
+#include <vector>
+#include <deque>
 #include <fstream>
 #include <sstream>
 #include "GestorDeGenomas.h"
@@ -97,8 +98,8 @@ void ListarComandos(std::string parametros){
     if (parametros.empty()) {
             std::cout << "Comandos disponibles:\n";
             std::cout << "·cargar \n·listar_secuencias \n·histograma \n·es_subsecuencia \n";
-            std::cout << "·enmascarar \n·guardar \n·codificar \n·decodificar \n";
-            std::cout << "·ruta_mas_corta \n·base_remota \n·ayuda  \n·limpiar\n·salir \n";
+            std::cout << "·enmascarar \n·guardar \n";
+            std::cout << "·ayuda  \n·limpiar\n·salir \n";
             std::cout << "Ingrese 'ayuda <comando>' para obtener ayuda sobre un comando específico.\n";
         } else {
             MostrarAyudaComando(parametros);
@@ -119,28 +120,43 @@ void Cargar(std::string Nombre){
     }
 
     Gestor.LimpiarSecuencias();
-    std::string linea = "1";
+    std::string NombreSecuencia;
+    char Aux = ' ';
+    std::string linea = " ";
 
-    while(true){
+    while (true) {
         Secuencia S;
-        if(!linea.empty() && linea[0]=='>'){
-            linea.erase(0,1);
+        std::deque<char> Genomas;
+        if (!linea.empty() && linea[0] == '>') {
+            linea.erase(0, 1);    
             S.SetNombre(linea);
-            
-            while (getline(Cargar, linea) && (linea.empty() || linea[0] != '>')) {
-            S.AñadirGenomas(linea);
+
+            while (Cargar.get(Aux)) {
+                if (Aux == '>') {      
+                    Cargar.putback(Aux);
+                    break;
+                }
+                if (Aux == '\n' || Aux == '\r') {
+                    S.AñadirGenomas(Genomas);
+                    Genomas.clear();
+                    continue;      
+                }
+                Genomas.push_back(Aux); 
             }
 
             Gestor.AñadirSecuencias(S);
 
-        }else{
-            getline(Cargar,linea);
+        } else {
+            if (!std::getline(Cargar, linea)) {
+                break; 
+            }
         }
-    
-        if(Cargar.eof()){
+
+        if (Cargar.eof()) {
             break;
         }
     }
+
 
     int temp = (Gestor.getSecuencias()).size();
 
@@ -179,10 +195,17 @@ void Guardar(std::string Nombre){
 
 
     for(std::vector<Secuencia>::iterator teit = temp.begin(); teit != temp.end(); teit++){
+
         Guardar << ">" << teit->GetNombre() << "\n";
+
         std::vector<Genomas> sub_temp = teit->GetGenomas();
         for(std::vector<Genomas>::iterator suit = sub_temp.begin(); suit != sub_temp.end() ; suit++){
-            Guardar << suit->GetFila() <<"\n";
+            std::deque<char> Genomas = suit->GetGenomas();
+            std::deque<char>::iterator itchar;
+            for(itchar = Genomas.begin() ;itchar != Genomas.end(); itchar++){
+                Guardar << *(itchar);
+            }
+            Guardar << "\n";
         }
     }
 

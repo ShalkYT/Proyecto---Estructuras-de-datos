@@ -1,62 +1,117 @@
 #include "Genomas.h"
 
-void Genomas::SetFila(std::string Fila){
-    this->Fila = Fila;
+void Genomas::SetGenoma(std::deque<char> Genomas){
+    this->Genomas = Genomas;
 }
 
-std::string Genomas::GetFila(){
-    return Fila;
+std::deque<char> Genomas::GetGenomas(){
+    return Genomas;
 }
 
 int Genomas::ContarBases(){
-    int count = 0;
-    for(long unsigned int i = 0; i < Fila.size() ; i++){
-        if(Fila[i] == 'A' || Fila[i] == 'C' || Fila[i] == 'G' || Fila[i] == 'T' || Fila[i] == 'U' || Fila[i] == '-'){
-            count++;
+    std::deque<char>::iterator it;
+    int Count = 0;
+    for(it = Genomas.begin(); it != Genomas.end(); it++){
+        if(*(it) == 'A' || *(it) == 'C' || *(it) == 'G' || *(it) == 'T' || *(it) == 'U' || *(it) == '-' ){
+            Count++;
         }
-    } 
-    return count;
+    }
+    return Count;
 }
 
 bool Genomas::EsCompleta(){
+    std::deque<char>::iterator it;
     bool Completa = true;
-    for(long unsigned int i = 0; i < Fila.size() ; i++){
-        if(Fila[i] != 'A' && Fila[i] != 'C' && Fila[i] != 'G' && Fila[i] != 'T' && Fila[i] == 'U'){
+    for(it = Genomas.begin(); it != Genomas.end(); it++){
+        if(*(it) != 'A' || *(it) != 'C' || *(it) != 'G' || *(it) != 'T' || *(it) != 'U') {
             Completa = false;
         }
-    } 
+    }
     return Completa;
 }
 
 std::vector<int> Genomas::ConteoHistograma(){
     std::vector<int> Count(6,0);
     std::vector<int>::iterator it = Count.begin();
-    for(long unsigned int i = 0; i < Fila.size() ; i++){
-        if(Fila[i] == 'A') (*(it))++;
-        if(Fila[i] == 'C') (*(it + 1))++;
-        if(Fila[i] == 'G') (*(it + 2))++;
-        if(Fila[i] == 'T') (*(it + 3))++;
-        if(Fila[i] == 'U') (*(it + 4))++;
-        if(Fila[i] == '-') (*(it + 5))++;
+    std::deque<char>::iterator it2;
+    for(it2 = Genomas.begin(); it2 != Genomas.end(); it2++){
+        if(*(it2) == 'A') (*(it))++;
+        if(*(it2) == 'C') (*(it + 1))++;
+        if(*(it2) == 'G') (*(it + 2))++;
+        if(*(it2) == 'T') (*(it + 3))++;
+        if(*(it2) == 'U') (*(it + 4))++;
+        if(*(it2) == '-') (*(it + 5))++;
     } 
     return Count;
 }
 
-int Genomas::Cantidad_Subsecuencias(std::string subsecuencia){
+int Genomas::Cantidad_Subsecuencias(std::string Subsecuencia){
     int Count = 0;
+    bool Es_Subsecuencia;
+    std::deque<char>::iterator itGen;
+    std::deque<char>::iterator itSubGen;
+    std::string::iterator itSubsecuencia;
     
-    for(size_t pos = Fila.find(subsecuencia) ; pos != std::string::npos ; pos = Fila.find(subsecuencia, pos + 1 ))
-        Count++;
+    for(itGen = Genomas.begin(); itGen != Genomas.end(); itGen++){
+        Es_Subsecuencia = true;
+        itSubsecuencia = Subsecuencia.begin();
+        if(*(itGen) == *(itSubsecuencia)){
+            itSubGen = itGen;
+            while((itSubGen != Genomas.end() && itSubsecuencia != Subsecuencia.end())){
+                if((*itSubGen) != (*itSubsecuencia)){
+                    Es_Subsecuencia = false;
+                    break;
+                }
+                itSubGen++;
+                itSubsecuencia++;
+            }
+        }else{
+            Es_Subsecuencia = false;
+        }
+
+        if(Es_Subsecuencia && itSubsecuencia == Subsecuencia.end()){
+            Count++;
+        }
+
+    }
 
     return Count;
 }
 
 int Genomas::Enmascarar_Subsecuencias(std::string Subsecuencia){
     int Count = 0;
+    bool Es_Subsecuencia;
+    std::deque<char>::iterator itGen;
+    std::deque<char>::iterator itSubGen;
+    std::string::iterator itSubsecuencia;
+    
+    for(itGen = Genomas.begin(); itGen != Genomas.end(); itGen++){
+        Es_Subsecuencia = true;
+        itSubsecuencia = Subsecuencia.begin();
+        if(*(itGen) == *(itSubsecuencia)){
+            itSubGen = itGen;
+            while((itSubGen != Genomas.end() && itSubsecuencia != Subsecuencia.end())){
+                if((*itSubGen) != (*itSubsecuencia)){
+                    Es_Subsecuencia = false;
+                    break;
+                }
+                itSubGen++;
+                itSubsecuencia++;
+            }
+        }else{
+            Es_Subsecuencia = false;
+        }
 
-    for(size_t pos = Fila.find(Subsecuencia) ; pos != std::string::npos ; pos = Fila.find(Subsecuencia, pos + 1 )){
-        Count++;
-        Fila.replace(pos,Subsecuencia.size(),std::string(Subsecuencia.length(), 'X'));
+        if(Es_Subsecuencia && itSubsecuencia == Subsecuencia.end()){
+            Count++;
+            itSubGen = itGen;
+            for(itSubsecuencia = Subsecuencia.begin(); itSubsecuencia != Subsecuencia.end(); itSubsecuencia++){
+                *(itSubGen) = 'X';
+                itSubGen++;
+            }
+        }
+
     }
+
     return Count;
 }

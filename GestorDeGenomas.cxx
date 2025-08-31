@@ -52,7 +52,7 @@ void GestorDeGenomas::Histograma(std::string Nombre){
         std::vector<int> Histograma = (it+i)->histogramaSecuencia();
         std::vector<int>::iterator aux = Histograma.begin();
         std::cout << "(LA SECUENCIA EXISTE)";
-        std::cout << "\nA : " << *(aux) << "\nC : " << *(aux+1) << "\nG : " << *(aux+2) << "\nT : " << *(aux+3) << "\nU : " << *(aux+4) << "\n- : " << *(aux+5); 
+        std::cout << "\nA : " << *(aux) << "\nC : " << *(aux+1) << "\nG : " << *(aux+2) << "\nT : " << *(aux+3) << "\nU : " << *(aux+4) << "\n- : " << *(aux+5) << "\n"; 
 
     }else{
         std::cout << "(LA SECUENCIA NO EXISTE)\n";

@@ -15,7 +15,6 @@ public:
     int Enmascarar_Subsecuencias(std::string Subsecuencia);
 private:
     std::vector<Secuencia> VectorSecuencias;  
-    
 };
 
 #endif // GESTOR_DE_GENOMAS_H

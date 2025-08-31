@@ -1,9 +1,9 @@
 #include "Secuencia.h"
 #include <iostream>
 
-void Secuencia::AñadirGenomas(std::string Fila){
+void Secuencia::AñadirGenomas(std::deque<char> Genoma){
     Genomas G;
-    G.SetFila(Fila);
+    G.SetGenoma(Genoma);
     VectorGenomas.push_back(G);
 }
 
