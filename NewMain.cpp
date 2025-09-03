@@ -17,7 +17,7 @@ GestorDeGenomas Gestor;
 int main(){
     std::string entrada;
     std::cout << "Sistema de Manipulación de Genomas\n";
-    std::cout << "Escriba 'ayuda' para ver l os comandos disponibles\n";
+    std::cout << "Escriba 'ayuda' para ver los comandos disponibles\n";
 
         while(true){
             std::cout << "$ ";
