@@ -158,7 +158,7 @@ void Cargar(std::string Nombre){
     }
 
 
-    int temp = (Gestor.getSecuencias()).size();
+    long long temp = (Gestor.getSecuencias()).size();
 
     if(temp == 0){
         std::cout << Nombre <<" no contiene ninguna secuencia.\n";

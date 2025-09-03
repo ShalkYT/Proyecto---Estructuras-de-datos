@@ -19,8 +19,8 @@ std::vector<Genomas> Secuencia::GetGenomas(){
     return VectorGenomas;
 }
 
-int Secuencia::ContarBases(){
-    int Count = 0;
+long long Secuencia::ContarBases(){
+    long long Count = 0;
 
     std::vector<Genomas>::iterator it;
     for(it = VectorGenomas.begin(); it != VectorGenomas.end(); it++){
@@ -44,7 +44,7 @@ bool Secuencia::GenomasCompletos(){
 }
 
 std::vector<int> Secuencia::histogramaSecuencia(){
-    std::vector<int> Count(6,0);
+    std::vector<int> Count(18,0);
     std::vector<int>::iterator itHistograma = Count.begin();
     std::vector<Genomas>::iterator itGenomas;
     for(itGenomas = VectorGenomas.begin(); itGenomas != VectorGenomas.end(); itGenomas++){

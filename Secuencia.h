@@ -11,7 +11,7 @@ public:
     void SetNombre(std::string Nombre);
     std::string GetNombre();
     std::vector<Genomas> GetGenomas();
-    int ContarBases();
+    long long ContarBases();
     bool GenomasCompletos();
     std::vector<int> histogramaSecuencia();
     int Cantidad_Subsecuencias(std::string Subsecuencia);
