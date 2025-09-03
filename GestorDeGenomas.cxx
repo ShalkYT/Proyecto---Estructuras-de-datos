@@ -51,7 +51,7 @@ void GestorDeGenomas::Histograma(std::string Nombre){
     if(encontro){
         std::vector<int> Histograma = (it+i)->histogramaSecuencia();
         std::vector<int>::iterator aux = Histograma.begin();
-        std::cout << "(LA SECUENCIA EXISTE)";
+        std::cout << "Histograma de " << Nombre;
         std::cout << "\nA : " << *(aux) << 
         "\nC : " << *(aux+1) << 
         "\nG : " << *(aux+2) << 
@@ -72,7 +72,7 @@ void GestorDeGenomas::Histograma(std::string Nombre){
         "\nX : " << *(aux+17) << "\n"; 
 
     }else{
-        std::cout << "(LA SECUENCIA NO EXISTE)\n";
+        std::cout << "ERROR: Secuencia invalida\n";
     }
 }
 
