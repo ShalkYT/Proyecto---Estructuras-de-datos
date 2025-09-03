@@ -31,8 +31,8 @@ std::vector<Genomas> Secuencia::GetGenomas(){
 }
 
 // Cuenta el total de bases sumando las de todos los genomas.
-long long Secuencia::ContarBases(){
-    long long Count = 0; // Inicializa contador de bases
+int Secuencia::ContarBases(){
+    int Count = 0; // Inicializa contador de bases
     std::vector<Genomas>::iterator it; // Crea iterador para recorrer los genomas
     for(it = VectorGenomas.begin(); it != VectorGenomas.end(); it++){ // Recorre desde el primer hasta el último genoma
         Count += it->ContarBases(); // Suma al contador las bases del genoma actual
