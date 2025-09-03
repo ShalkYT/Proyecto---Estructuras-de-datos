@@ -115,7 +115,7 @@ void Cargar(std::string Nombre){
     std::ifstream Cargar(Nombre);
 
     if(!Cargar.is_open()){
-        std::cout << Nombre << "ERROR: el archivo no se encuentra o no puede leerse.\n";
+        std::cout<< "ERROR: el archivo \"" << Nombre <<"\" no se encuentra o no puede leerse.\n";
         return;
     }
 
@@ -229,14 +229,14 @@ void ProcesarComando(std::string comando,std::string parametros){
     }
     else if(comando == "histograma"){
         if(parametros.empty()){
-            std::cout << "Error: Falta la descripción de la secuencia\n";
+            std::cout << "ERROR: Falta la descripción de la secuencia\n";
             return;
         }
         Gestor.Histograma(parametros);
     }
     else if(comando == "es_subsecuencia"){
         if(((Gestor.getSecuencias()).size()) == 0){
-            std::cout << "No hay secuencias cargadas.\n";
+            std::cout << "ERROR: No hay secuencias cargadas.\n";
         }else{
             temp = Gestor.Cantidad_Subsecuencias(parametros);
             if(temp == 0){
@@ -263,5 +263,8 @@ void ProcesarComando(std::string comando,std::string parametros){
     }
     else if(comando == "salir"){
         exit(0);
+    }
+    else{
+        std::cout << "Comando no reconocido\n";
     }
 }
