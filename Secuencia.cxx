@@ -1,95 +1,96 @@
 #include "Secuencia.h"
 #include <iostream>
 
-void Secuencia::AñadirGenomas(std::deque<char> Genoma){
-    Genomas G;
-    G.SetGenoma(Genoma);
-    VectorGenomas.push_back(G);
+void Secuencia::AñadirGenomas(std::deque<char> Genoma){ // Método que recibe un genoma como deque de caracteres
+    Genomas G; // Crea un objeto de tipo Genomas
+    G.SetGenoma(Genoma); // Asigna el genoma recibido al objeto G
+    VectorGenomas.push_back(G); // Agrega el objeto G al vector de genomas
 }
 
-void Secuencia::SetNombre(std::string Nombre){
-    this->Nombre = Nombre;
+void Secuencia::SetNombre(std::string Nombre){ // Método que recibe un nombre como string
+    this->Nombre = Nombre; // Asigna el valor recibido al atributo Nombre del objeto
 }
 
-std::string Secuencia::GetNombre(){
-    return Nombre;
+std::string Secuencia::GetNombre(){ // Método que devuelve el nombre de la secuencia
+    return Nombre; // Retorna el atributo Nombre
 }
 
-std::vector<Genomas> Secuencia::GetGenomas(){
-    return VectorGenomas;
+std::vector<Genomas> Secuencia::GetGenomas(){ // Método que devuelve el vector de genomas
+    return VectorGenomas; // Retorna el atributo VectorGenomas
 }
 
-long long Secuencia::ContarBases(){
-    long long Count = 0;
+long long Secuencia::ContarBases(){ // Método que cuenta el total de bases en todos los genomas
+    long long Count = 0; // Inicializa el contador en 0
 
-    std::vector<Genomas>::iterator it;
-    for(it = VectorGenomas.begin(); it != VectorGenomas.end(); it++){
-        Count += it->ContarBases();
+    std::vector<Genomas>::iterator it; // Declara un iterador para recorrer el vector de genomas
+    for(it = VectorGenomas.begin(); it != VectorGenomas.end(); it++){ // Recorre cada genoma en el vector
+        Count += it->ContarBases(); // Suma al contador las bases del genoma actual
     }
 
-    return Count;
+    return Count; // Retorna el total de bases contadas
 }
 
-bool Secuencia::GenomasCompletos(){
-    bool Completos = true;
 
-    std::vector<Genomas>::iterator it;
-    for(it = VectorGenomas.begin(); it != VectorGenomas.end(); it++){
-        if(!(it->EsCompleta())){
-            Completos = false;
+bool Secuencia::GenomasCompletos(){ // Método que verifica si todos los genomas están completos
+    bool Completos = true; // Se asume inicialmente que todos están completos
+
+    std::vector<Genomas>::iterator it; // Declara un iterador para recorrer el vector de genomas
+    for(it = VectorGenomas.begin(); it != VectorGenomas.end(); it++){ // Recorre cada genoma en el vector
+        if(!(it->EsCompleta())){ // Si el genoma actual no está completo
+            Completos = false; // Marca la variable como falso
         }
     }
 
-    return Completos;
+    return Completos; // Retorna si todos los genomas están completos o no
 }
 
-std::vector<int> Secuencia::histogramaSecuencia(){
-    std::vector<int> Count(18,0);
-    std::vector<int>::iterator itHistograma = Count.begin();
-    std::vector<Genomas>::iterator itGenomas;
-    for(itGenomas = VectorGenomas.begin(); itGenomas != VectorGenomas.end(); itGenomas++){
-        std::vector<int> temp = itGenomas->ConteoHistograma();
-        std::vector<int>::iterator aux = temp.begin();
-        *(itHistograma) += *(aux);
-        *(itHistograma + 1) += *(aux + 1);
-        *(itHistograma + 2) += *(aux + 2);
-        *(itHistograma + 3) += *(aux + 3);
-        *(itHistograma + 4) += *(aux + 4);
-        *(itHistograma + 5) += *(aux + 5);
-        *(itHistograma + 6) += *(aux + 6);
-        *(itHistograma + 7) += *(aux + 7);
-        *(itHistograma + 8) += *(aux + 8);
-        *(itHistograma + 9) += *(aux + 9);
-        *(itHistograma + 10) += *(aux + 10);
-        *(itHistograma + 11) += *(aux + 11);
-        *(itHistograma + 12) += *(aux + 12);
-        *(itHistograma + 13) += *(aux + 13);
-        *(itHistograma + 14) += *(aux + 14);
-        *(itHistograma + 15) += *(aux + 15);
-        *(itHistograma + 16) += *(aux + 16);
-        *(itHistograma + 17) += *(aux + 17);
+std::vector<int> Secuencia::histogramaSecuencia(){ // Método que genera un histograma acumulado de la secuencia
+    std::vector<int> Count(18,0); // Inicializa un vector de 18 posiciones en cero
+    std::vector<int>::iterator itHistograma = Count.begin(); // Iterador al inicio del histograma
+    std::vector<Genomas>::iterator itGenomas; // Iterador para recorrer los genomas
+    for(itGenomas = VectorGenomas.begin(); itGenomas != VectorGenomas.end(); itGenomas++){ // Recorre cada genoma
+        std::vector<int> temp = itGenomas->ConteoHistograma(); // Obtiene el histograma del genoma actual
+        std::vector<int>::iterator aux = temp.begin(); // Iterador al inicio del histograma temporal
+        *(itHistograma) += *(aux); // Suma la primera posición
+        *(itHistograma + 1) += *(aux + 1); // Suma la segunda posición
+        *(itHistograma + 2) += *(aux + 2); // Suma la tercera posición
+        *(itHistograma + 3) += *(aux + 3); // Suma la cuarta posición
+        *(itHistograma + 4) += *(aux + 4); // Suma la quinta posición
+        *(itHistograma + 5) += *(aux + 5); // Suma la sexta posición
+        *(itHistograma + 6) += *(aux + 6); // Suma la séptima posición
+        *(itHistograma + 7) += *(aux + 7); // Suma la octava posición
+        *(itHistograma + 8) += *(aux + 8); // Suma la novena posición
+        *(itHistograma + 9) += *(aux + 9); // Suma la décima posición
+        *(itHistograma + 10) += *(aux + 10); // Suma la posición 11
+        *(itHistograma + 11) += *(aux + 11); // Suma la posición 12
+        *(itHistograma + 12) += *(aux + 12); // Suma la posición 13
+        *(itHistograma + 13) += *(aux + 13); // Suma la posición 14
+        *(itHistograma + 14) += *(aux + 14); // Suma la posición 15
+        *(itHistograma + 15) += *(aux + 15); // Suma la posición 16
+        *(itHistograma + 16) += *(aux + 16); // Suma la posición 17
+        *(itHistograma + 17) += *(aux + 17); // Suma la posición 18
     }
-    return Count;
+    return Count; // Retorna el histograma acumulado
 }
 
-int Secuencia::Cantidad_Subsecuencias(std::string Subsecuencia){
-    std::vector<Genomas>::iterator it;
-    int Contador = 0;
+int Secuencia::Cantidad_Subsecuencias(std::string Subsecuencia){ // Método que cuenta las apariciones de una subsecuencia
+    std::vector<Genomas>::iterator it; // Iterador para recorrer los genomas
+    int Contador = 0; // Inicializa contador en 0
 
-    for(it = VectorGenomas.begin(); it != VectorGenomas.end(); it++){
-        Contador += it->Cantidad_Subsecuencias(Subsecuencia);
+    for(it = VectorGenomas.begin(); it != VectorGenomas.end(); it++){ // Recorre cada genoma
+        Contador += it->Cantidad_Subsecuencias(Subsecuencia); // Suma las apariciones de la subsecuencia en cada genoma
     }
 
-    return Contador;
+    return Contador; // Retorna la cantidad total de apariciones
 }
 
-int Secuencia::Enmascarar_Subsecuencias(std::string Subsecuencia){
-    std::vector<Genomas>::iterator it;
-    int Contador = 0;
+int Secuencia::Enmascarar_Subsecuencias(std::string Subsecuencia){ // Método que enmascara una subsecuencia en todos los genomas
+    std::vector<Genomas>::iterator it; // Iterador para recorrer los genomas
+    int Contador = 0; // Inicializa contador en 0
 
-    for(it = VectorGenomas.begin(); it != VectorGenomas.end(); it++){
-        Contador += it->Enmascarar_Subsecuencias(Subsecuencia);
+    for(it = VectorGenomas.begin(); it != VectorGenomas.end(); it++){ // Recorre cada genoma
+        Contador += it->Enmascarar_Subsecuencias(Subsecuencia); // Suma las veces que se enmascaró la subsecuencia
     }
 
-    return Contador;
+    return Contador; // Retorna la cantidad total de subsecuencias enmascaradas
 }
