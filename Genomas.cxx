@@ -12,7 +12,7 @@ int Genomas::ContarBases(){
     std::deque<char>::iterator it;
     int Count = 0;
     for(it = Genomas.begin(); it != Genomas.end(); it++){
-        if(*(it) == 'A' || *(it) == 'C' || *(it) == 'G' || *(it) == 'T' || *(it) == 'U' || *(it) == '-' ){
+        if(*(it) == 'A' || *(it) == 'C' || *(it) == 'G' || *(it) == 'T' || *(it) == 'U' ){
             Count++;
         }
     }
@@ -23,7 +23,7 @@ bool Genomas::EsCompleta(){
     std::deque<char>::iterator it;
     bool Completa = true;
     for(it = Genomas.begin(); it != Genomas.end(); it++){
-        if(*(it) != 'A' || *(it) != 'C' || *(it) != 'G' || *(it) != 'T' || *(it) != 'U') {
+        if(*(it) != 'A' && *(it) != 'C' && *(it) != 'G' && *(it) != 'T' && *(it) != 'U') {
             Completa = false;
         }
     }
