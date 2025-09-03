@@ -56,6 +56,18 @@ std::vector<int> Secuencia::histogramaSecuencia(){
         *(itHistograma + 3) += *(aux + 3);
         *(itHistograma + 4) += *(aux + 4);
         *(itHistograma + 5) += *(aux + 5);
+        *(itHistograma + 6) += *(aux + 6);
+        *(itHistograma + 7) += *(aux + 7);
+        *(itHistograma + 8) += *(aux + 8);
+        *(itHistograma + 9) += *(aux + 9);
+        *(itHistograma + 10) += *(aux + 10);
+        *(itHistograma + 11) += *(aux + 11);
+        *(itHistograma + 12) += *(aux + 12);
+        *(itHistograma + 13) += *(aux + 13);
+        *(itHistograma + 14) += *(aux + 14);
+        *(itHistograma + 15) += *(aux + 15);
+        *(itHistograma + 16) += *(aux + 16);
+        *(itHistograma + 17) += *(aux + 17);
     }
     return Count;
 }

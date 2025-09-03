@@ -12,11 +12,12 @@ public:
     std::deque<char> GetGenomas();
     long long ContarBases();
     bool EsCompleta();
-    bool coincide_con_patron(char caracter_genoma, char codigo_patron) ;
     std::vector<int> ConteoHistograma();
     int Cantidad_Subsecuencias(std::string Subsecuencia);
     int Enmascarar_Subsecuencias(std::string Subsecuencia);
 private:
+    bool coincide_con_patron(char codigo_busqueda, char caracter_genoma) ;
+    void Debug_coincide_con_patron();
     std::deque<char> Genomas;
 };
 

@@ -1,4 +1,5 @@
 #include "Genomas.h"
+#include <iostream>
 
 void Genomas::SetGenoma(std::deque<char> Genomas){
     this->Genomas = Genomas;
@@ -58,33 +59,58 @@ std::vector<int> Genomas::ConteoHistograma(){
     return Count;
 }
 
-bool Genomas::coincide_con_patron(char caracter_genoma, char codigo_patron) {
+bool Genomas::coincide_con_patron(char codigo_busqueda, char caracter_genoma) {
+    codigo_busqueda = std::toupper(codigo_busqueda);
+    caracter_genoma = std::toupper(caracter_genoma);
     
-    switch(codigo_patron) {
+    // 1. Si son IGUALES: siempre true
+    if (codigo_busqueda == caracter_genoma) {
+        return true;
+    }
+    
+    // 2. Manejar caracteres AMBIGUOS en el genoma
+    switch(caracter_genoma) {
+        case 'R': 
+            return (codigo_busqueda == 'A' || codigo_busqueda == 'G');
+        case 'Y':
+            return (codigo_busqueda == 'C' || codigo_busqueda == 'T' || codigo_busqueda == 'U');
+        case 'K':
+            return (codigo_busqueda == 'G' || codigo_busqueda == 'T' || codigo_busqueda == 'U');
+        case 'M':
+            return (codigo_busqueda == 'A' || codigo_busqueda == 'C');
+        case 'S':
+            return (codigo_busqueda == 'C' || codigo_busqueda == 'G');
+        case 'W':
+            return (codigo_busqueda == 'A' || codigo_busqueda == 'T' || codigo_busqueda == 'U');
+        case 'B':
+            return (codigo_busqueda == 'C' || codigo_busqueda == 'G' || codigo_busqueda == 'T' || codigo_busqueda == 'U');
+        case 'D':
+            return (codigo_busqueda == 'A' || codigo_busqueda == 'G' || codigo_busqueda == 'T' || codigo_busqueda == 'U');
+        case 'H':
+            return (codigo_busqueda == 'A' || codigo_busqueda == 'C' || codigo_busqueda == 'T' || codigo_busqueda == 'U');
+        case 'V':
+            return (codigo_busqueda == 'A' || codigo_busqueda == 'C' || codigo_busqueda == 'G');
+        case 'N':
+            return (codigo_busqueda == 'A' || codigo_busqueda == 'C' || codigo_busqueda == 'G' || codigo_busqueda == 'T' || codigo_busqueda == 'U');
+        default: break;
+    }
+    
+    // 3. Manejar códigos de búsqueda NORMALES
+    switch(codigo_busqueda) {
         case 'A': return (caracter_genoma == 'A');
         case 'C': return (caracter_genoma == 'C');
         case 'G': return (caracter_genoma == 'G');
         case 'T': return (caracter_genoma == 'T');
         case 'U': return (caracter_genoma == 'U');
-        case 'R': return (caracter_genoma == 'A' || caracter_genoma == 'G');
-        case 'Y': return (caracter_genoma == 'C' || caracter_genoma == 'T' || caracter_genoma == 'U');
-        case 'K': return (caracter_genoma == 'G' || caracter_genoma == 'T' || caracter_genoma == 'U');
-        case 'M': return (caracter_genoma == 'A' || caracter_genoma == 'C');
-        case 'S': return (caracter_genoma == 'C' || caracter_genoma == 'G');
-        case 'W': return (caracter_genoma == 'A' || caracter_genoma == 'T' || caracter_genoma == 'U');
-        case 'B': return (caracter_genoma == 'C' || caracter_genoma == 'G' || caracter_genoma == 'T' || caracter_genoma == 'U');
-        case 'D': return (caracter_genoma == 'A' || caracter_genoma == 'G' || caracter_genoma == 'T' || caracter_genoma == 'U');
-        case 'H': return (caracter_genoma == 'A' || caracter_genoma == 'C' || caracter_genoma == 'T' || caracter_genoma == 'U');
-        case 'V': return (caracter_genoma == 'A' || caracter_genoma == 'C' || caracter_genoma == 'G');
-        case 'N': return (caracter_genoma == 'A' || caracter_genoma == 'C' || caracter_genoma == 'G' || caracter_genoma == 'T' || caracter_genoma == 'U');
         case 'X': return (caracter_genoma == 'X');
         case '-': return (caracter_genoma == '-');
         default: return false;
     }
 }
+
 int Genomas::Cantidad_Subsecuencias(std::string Subsecuencia){
     if(Subsecuencia.empty() || Genomas.empty()) return 0;
-    
+   
     int Count = 0;
     bool Es_Subsecuencia;
     std::deque<char>::iterator itGen;
@@ -95,8 +121,9 @@ int Genomas::Cantidad_Subsecuencias(std::string Subsecuencia){
         Es_Subsecuencia = true;
         itSubsecuencia = Subsecuencia.begin();
         itSubGen = itGen;
+        
         while((itSubsecuencia != Subsecuencia.end() && itSubGen != Genomas.end())){
-            if(!coincide_con_patron(*itSubGen, *itSubsecuencia)){
+            if(!coincide_con_patron(*itSubsecuencia, *itSubGen)){
                 Es_Subsecuencia = false;
                 break;
             }
@@ -111,8 +138,9 @@ int Genomas::Cantidad_Subsecuencias(std::string Subsecuencia){
     
     return Count;
 }
-
 int Genomas::Enmascarar_Subsecuencias(std::string Subsecuencia){
+    if(Subsecuencia.empty() || Genomas.empty()) return 0;
+    
     int Count = 0;
     bool Es_Subsecuencia;
     std::deque<char>::iterator itGen;
@@ -123,10 +151,12 @@ int Genomas::Enmascarar_Subsecuencias(std::string Subsecuencia){
         Es_Subsecuencia = true;
         itSubsecuencia = Subsecuencia.begin();
         
-        if(coincide_con_patron(*(itGen), *(itSubsecuencia))){
+        
+        if(coincide_con_patron(*itSubsecuencia, *itGen)){  
             itSubGen = itGen;
             while((itSubGen != Genomas.end() && itSubsecuencia != Subsecuencia.end())){
-                if(!coincide_con_patron(*(itSubGen), *(itSubsecuencia))){
+            
+                if(!coincide_con_patron(*itSubsecuencia, *itSubGen)){
                     Es_Subsecuencia = false;
                     break;
                 }
