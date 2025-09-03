@@ -50,7 +50,7 @@ public:
     std::deque<char> GetGenomas();
 
     // Cuenta la cantidad total de bases en el genoma.
-    long long ContarBases();
+    int ContarBases();
 
     // Verifica si el genoma cumple con la condición de estar completo.
     bool EsCompleta();
