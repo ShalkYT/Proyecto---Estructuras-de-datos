@@ -21,7 +21,6 @@ void GestorDeGenomas::LimpiarSecuencias(){
     VectorSecuencias.clear();
 }
 
-// Lista las secuencias en memoria mostrando nombre, bases y si están completas.
 void GestorDeGenomas::ListarSecuencias(){
     if(VectorSecuencias.empty()){ // Si no hay secuencias cargadas
         std::cout << "No hay secuencias cargadas en memoria.\n";
@@ -31,14 +30,48 @@ void GestorDeGenomas::ListarSecuencias(){
     std::cout << "Hay " << VectorSecuencias.size() <<" secuencias cargadas en memoria:\n";
     
     std::vector<Secuencia>::iterator it; // Iterador de secuencias
+    
     for(it = VectorSecuencias.begin(); it != VectorSecuencias.end(); it++){ // Recorre cada secuencia
-        if(it->GenomasCompletos()){ // Si la secuencia está completa
-            std::cout << "Secuencia " << it->GetNombre() 
-                      << " contiene " << it->ContarBases() << " bases.\n";
-        }else{ // Si no está completa
-            std::cout << "Secuencia " << it->GetNombre() 
-                      << " contiene al menos " << it->ContarBases() << " bases.\n";
+        int tipos_bases = 0; // Contador de tipos de bases diferentes
+        std::vector<int> histograma = it->histogramaSecuencia(); // Obtiene el histograma
+        
+        // Cuenta los tipos de bases básicas presentes (A, C, G, T, U)
+        if(histograma[0] > 0) tipos_bases++; // A
+        if(histograma[1] > 0) tipos_bases++; // C
+        if(histograma[2] > 0) tipos_bases++; // G
+        if(histograma[3] > 0) tipos_bases++; // T
+        if(histograma[4] > 0) tipos_bases++; // U
+        
+        // Verificar bases ambiguas que representen tipos faltantes
+        bool tiene_A = (histograma[0] > 0);
+        bool tiene_C = (histograma[1] > 0);
+        bool tiene_G = (histograma[2] > 0);
+        bool tiene_T = (histograma[3] > 0);
+        bool tiene_U = (histograma[4] > 0);
+        
+        // Si faltan bases básicas, verificar si están representadas por ambiguas
+        if(!tiene_A && (histograma[5] > 0 || histograma[9] > 0 || histograma[11] > 0 || 
+                        histograma[13] > 0 || histograma[14] > 0 || histograma[15] > 0 || histograma[16] > 0)) {
+            tipos_bases++; // A representada por ambiguas
         }
+        if(!tiene_C && (histograma[7] > 0 || histograma[9] > 0 || histograma[10] > 0 || 
+                        histograma[12] > 0 || histograma[14] > 0 || histograma[15] > 0 || histograma[16] > 0)) {
+            tipos_bases++; // C representada por ambiguas
+        }
+        if(!tiene_G && (histograma[5] > 0 || histograma[8] > 0 || histograma[10] > 0 || 
+                        histograma[12] > 0 || histograma[13] > 0 || histograma[15] > 0 || histograma[16] > 0)) {
+            tipos_bases++; // G representada por ambiguas
+        }
+        if(!tiene_T && (histograma[7] > 0 || histograma[8] > 0 || histograma[11] > 0 || 
+                        histograma[12] > 0 || histograma[13] > 0 || histograma[14] > 0 || histograma[16] > 0)) {
+            tipos_bases++; // T representada por ambiguas
+        }
+        if(!tiene_U && (histograma[7] > 0 || histograma[8] > 0 || histograma[11] > 0 || 
+                        histograma[12] > 0 || histograma[13] > 0 || histograma[14] > 0 || histograma[16] > 0)) {
+            tipos_bases++; // U representada por ambiguas
+        }
+        
+        std::cout << "Secuencia " << it->GetNombre() << " contiene " << tipos_bases << " tipos de bases.\n";
     }
 }
 
