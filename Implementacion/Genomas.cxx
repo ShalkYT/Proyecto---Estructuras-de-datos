@@ -19,9 +19,9 @@ std::deque<char> Genomas::GetGenomas(){
 }
 
 // Cuenta cuántas bases válidas (A, C, G, T, U) existen en el genoma.
-long long Genomas::ContarBases(){
+int Genomas::ContarBases(){
     std::deque<char>::iterator it; // Iterador sobre el deque de genoma
-    long long Count = 0; // Contador de bases
+    int Count = 0; // Contador de bases
     for(it = Genomas.begin(); it != Genomas.end(); it++){ // Recorre todos los caracteres
         if(*(it) == 'A' || *(it) == 'C' || *(it) == 'G' || *(it) == 'T' || *(it) == 'U' ){
             Count++; // Suma al contador si es una base válida

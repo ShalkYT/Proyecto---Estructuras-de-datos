@@ -134,45 +134,68 @@ void Cargar(std::string Nombre){
     }
 
     Gestor.LimpiarSecuencias(); // Se eliminan las secuencias previas.
-    std::string NombreSecuencia;
-    char Aux = ' ';              // Variable auxiliar para leer caracteres.
-    std::string linea = " ";     // Línea actual que se analiza.
+    std::string linea;
+    int secuenciasDescartadas = 0;  // Contador de secuencias descartadas por ancho inconsistente
 
-    // Se procesa el archivo de forma secuencial.
-    while (true) {
-        Secuencia S;              // Objeto que almacenará cada secuencia.
-        std::deque<char> Genomas; // Contenedor para los caracteres de cada genoma.
-
+    // Se procesa el archivo línea por línea.
+    while (std::getline(Cargar, linea)) {
         // Si la línea comienza con '>', significa que es el nombre de la secuencia.
         if (!linea.empty() && linea[0] == '>') {
-            linea.erase(0, 1);    
-            S.SetNombre(linea);
-
-            // Se leen los caracteres de la secuencia hasta encontrar otra cabecera o el fin del archivo.
-            while (Cargar.get(Aux)) {
-                if (Aux == '>') {       // Si se encuentra otra cabecera, se retrocede y se detiene.
-                    Cargar.putback(Aux);
-                    break;
+            std::string nombreSecuencia = linea.substr(1);  // Remover el '>'
+            std::vector<std::string> lineasSecuencia;       // Almacenar todas las líneas de la secuencia
+            
+            // Leer todas las líneas de esta secuencia
+            while (std::getline(Cargar, linea) && !linea.empty() && linea[0] != '>') {
+                // Eliminar espacios en blanco y caracteres de control
+                std::string lineaLimpia;
+                for (char c : linea) {
+                    if (c != '\r' && c != '\n' && c != ' ' && c != '\t') {
+                        lineaLimpia += c;
+                    }
                 }
-                if (Aux == '\n' || Aux == '\r') { // Si es salto de línea, se guarda lo acumulado.
-                    S.AñadirGenomas(Genomas);
-                    Genomas.clear();
-                    continue;      
+                if (!lineaLimpia.empty()) {
+                    lineasSecuencia.push_back(lineaLimpia);
                 }
-                Genomas.push_back(Aux); // Se añade cada base de la secuencia.
             }
 
-            Gestor.AñadirSecuencias(S); // Se guarda la secuencia completa en el gestor.
-
-        } else {
-            // Si no es una cabecera, se intenta leer una nueva línea.
-            if (!std::getline(Cargar, linea)) {
-                break; 
+            // Validar que todas las líneas tengan el mismo ancho
+            bool anchoConsistente = true;
+            if (!lineasSecuencia.empty()) {
+                size_t anchoReferencia = lineasSecuencia[0].length();
+                for (const std::string& lineaSeq : lineasSecuencia) {
+                    if (lineaSeq.length() != anchoReferencia) {
+                        anchoConsistente = false;
+                        break;
+                    }
+                }
             }
-        }
 
-        if (Cargar.eof()) { // Si se llegó al final del archivo, se detiene.
-            break;
+            // Solo añadir la secuencia si tiene ancho consistente
+            if (anchoConsistente && !lineasSecuencia.empty()) {
+                Secuencia S;
+                S.SetNombre(nombreSecuencia);
+                
+                // Añadir cada línea como un genoma
+                for (const std::string& lineaSeq : lineasSecuencia) {
+                    std::deque<char> genomas;
+                    for (char c : lineaSeq) {
+                        genomas.push_back(c);
+                    }
+                    S.AñadirGenomas(genomas);
+                }
+                
+                Gestor.AñadirSecuencias(S);
+            } else {
+                // Secuencia descartada por ancho inconsistente
+                secuenciasDescartadas++;
+                std::cout << "ADVERTENCIA: Secuencia '" << nombreSecuencia 
+                         << "' descartada por tener líneas de diferente ancho\n";
+            }
+
+            // Si encontramos otra cabecera mientras leíamos, retroceder para procesarla
+            if (!linea.empty() && linea[0] == '>') {
+                Cargar.seekg(Cargar.tellg() - static_cast<std::streampos>(linea.length() + 1));
+            }
         }
     }
 

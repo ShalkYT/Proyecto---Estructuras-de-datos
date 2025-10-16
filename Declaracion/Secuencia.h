@@ -62,7 +62,7 @@ public:
     std::vector<Genomas> GetGenomas();
 
     // Cuenta el total de bases en todos los genomas.
-    long long ContarBases();
+    int ContarBases();
 
     // Verifica si todos los genomas están completos.
     bool GenomasCompletos();
