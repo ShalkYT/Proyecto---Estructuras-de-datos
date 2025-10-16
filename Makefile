@@ -1,7 +1,8 @@
 CXX = g++
-CXXFLAGS = -Wall -std=c++17
+CXXFLAGS = -Wall -std=c++17 -IDeclaracion
+SOURCEDIR = Implementacion/
 
-DEPENDENCYS = Genomas.cxx Secuencia.cxx GestorDeGenomas.cxx
+DEPENDENCYS = $(SOURCEDIR)Genomas.cxx $(SOURCEDIR)Secuencia.cxx $(SOURCEDIR)GestorDeGenomas.cxx
 
 NewMain:
 	$(CXX) $(CXXFLAGS) $(DEPENDENCYS) NewMain.cpp -o main

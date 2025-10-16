@@ -3,9 +3,9 @@
 #include <deque>
 #include <fstream>
 #include <sstream>
-#include "GestorDeGenomas.h"
-#include "Secuencia.h"
-#include "Genomas.h"
+#include "Declaracion/GestorDeGenomas.h"
+#include "Declaracion/Secuencia.h"
+#include "Declaracion/Genomas.h"
 
 // Limpia la pantalla de la consola usando secuencias ANSI.
 void LimpiarPantalla();
@@ -124,8 +124,9 @@ void Cargar(std::string Nombre){
         std::cout << "ERROR: Falta el nombre del archivo\n";
         return;
     }
-
-    std::ifstream Cargar(Nombre);  // Se abre el archivo en modo lectura.
+    std::string direccion = "ArchivosPrueba/" + Nombre;
+    std::ifstream Cargar(direccion);  // Se abre el archivo en modo lectura.
+    std::cout<< direccion;
 
     if(!Cargar.is_open()){
         std::cout<< "ERROR: el archivo \"" << Nombre <<"\" no se encuentra o no puede leerse.\n";
@@ -182,9 +183,9 @@ void Cargar(std::string Nombre){
         std::cout << Nombre <<" no contiene ninguna secuencia.\n";
     }
     else if(temp == 1){
-        std::cout <<"1 secuencia cargada correctamente desde " << Nombre << "\n";
+        std::cout <<" 1 secuencia cargada correctamente desde " << Nombre << "\n";
     }else{
-        std::cout << temp <<" secuencias cargadas correctamente desde " << Nombre << "\n";
+        std::cout <<" "<< temp <<" secuencias cargadas correctamente desde " << Nombre << "\n";
     }
 
     Cargar.close(); // Se cierra el archivo.

@@ -39,6 +39,11 @@
 #include <algorithm>
 #include <deque>
 
+struct histograma{
+    char Gen;
+    int Repeticiones;
+};
+
 // Clase que representa un genoma como una secuencia de caracteres
 // y permite realizar operaciones de análisis y manipulación.
 class Genomas {
@@ -56,7 +61,7 @@ public:
     bool EsCompleta();
 
     // Genera un histograma con las frecuencias de las bases del genoma.
-    std::vector<int> ConteoHistograma();
+    std::vector<struct histograma> ConteoHistograma();
 
     // Cuenta cuántas veces aparece una subsecuencia dentro del genoma.
     int Cantidad_Subsecuencias(std::string Subsecuencia);

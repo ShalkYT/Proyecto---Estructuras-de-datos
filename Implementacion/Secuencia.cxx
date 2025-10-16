@@ -53,33 +53,36 @@ bool Secuencia::GenomasCompletos(){
 }
 
 // Genera un histograma acumulado de las bases de todos los genomas.
-std::vector<int> Secuencia::histogramaSecuencia(){
-    std::vector<int> Count(18,0); // Vector de 18 posiciones inicializadas en cero
-    std::vector<int>::iterator itHistograma = Count.begin(); // Iterador que apunta al inicio del histograma acumulado
+std::vector<struct histograma> Secuencia::histogramaSecuencia(){
+    std::vector<struct histograma> histograma;
+    bool encontro;
+    struct histograma temp_his;
+
+    std::vector<struct histograma>::iterator his;
     std::vector<Genomas>::iterator itGenomas; // Iterador para recorrer los genomas
+
     for(itGenomas = VectorGenomas.begin(); itGenomas != VectorGenomas.end(); itGenomas++){ // Recorre todos los genomas
-        std::vector<int> temp = itGenomas->ConteoHistograma(); // Obtiene el histograma del genoma actual
-        std::vector<int>::iterator aux = temp.begin(); // Iterador al inicio del histograma temporal
-        *(itHistograma)     += *(aux);     // Suma posición 0
-        *(itHistograma+1)   += *(aux+1);   // Suma posición 1
-        *(itHistograma+2)   += *(aux+2);   // Suma posición 2
-        *(itHistograma+3)   += *(aux+3);   // Suma posición 3
-        *(itHistograma+4)   += *(aux+4);   // Suma posición 4
-        *(itHistograma+5)   += *(aux+5);   // Suma posición 5
-        *(itHistograma+6)   += *(aux+6);   // Suma posición 6
-        *(itHistograma+7)   += *(aux+7);   // Suma posición 7
-        *(itHistograma+8)   += *(aux+8);   // Suma posición 8
-        *(itHistograma+9)   += *(aux+9);   // Suma posición 9
-        *(itHistograma+10)  += *(aux+10);  // Suma posición 10
-        *(itHistograma+11)  += *(aux+11);  // Suma posición 11
-        *(itHistograma+12)  += *(aux+12);  // Suma posición 12
-        *(itHistograma+13)  += *(aux+13);  // Suma posición 13
-        *(itHistograma+14)  += *(aux+14);  // Suma posición 14
-        *(itHistograma+15)  += *(aux+15);  // Suma posición 15
-        *(itHistograma+16)  += *(aux+16);  // Suma posición 16
-        *(itHistograma+17)  += *(aux+17);  // Suma posición 17
+        std::vector<struct histograma> temp = itGenomas->ConteoHistograma(); // Obtiene el histograma del genoma actual
+        std::vector<struct histograma>::iterator aux = temp.begin(); // Iterador al inicio del histograma temporal
+
+        for(; aux != temp.end(); aux++){
+            encontro = false;
+            for(his = histograma.begin(); his != histograma.end();his++){
+                if((*(aux)).Gen == (*(his)).Gen){
+                    (*(his)).Repeticiones += (*(aux)).Repeticiones;
+                    encontro = true;
+                    break;
+                }
+            }
+            if(!encontro){
+                temp_his.Gen = (*(aux)).Gen;
+                temp_his.Repeticiones = 1;
+                histograma.push_back(temp_his);
+            }
+        }
+        
     }
-    return Count; // Devuelve el histograma acumulado
+    return histograma; // Devuelve el histograma acumulado
 }
 
 // Cuenta las apariciones de una subsecuencia en todos los genomas.

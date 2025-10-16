@@ -43,32 +43,30 @@ bool Genomas::EsCompleta(){
 }
 
 // Genera un histograma de 18 categorías con la frecuencia de cada carácter posible en el genoma.
-std::vector<int> Genomas::ConteoHistograma(){
-    std::vector<int> Count(18,0); // Inicializa vector de 18 contadores en cero
-    std::vector<int>::iterator it = Count.begin(); // Iterador para recorrer posiciones del histograma
+std::vector<struct histograma> Genomas::ConteoHistograma(){
+    std::vector<struct histograma> histograma;
+    bool encontro;
+    struct histograma temp;
+
     std::deque<char>::iterator it2; // Iterador sobre el genoma
+    std::vector<struct histograma>::iterator his;
 
     for(it2 = Genomas.begin(); it2 != Genomas.end(); it2++){ // Recorre cada carácter del genoma
-        if(*(it2) == 'A') (*(it))++;
-        if(*(it2) == 'C') (*(it + 1))++;
-        if(*(it2) == 'G') (*(it + 2))++;
-        if(*(it2) == 'T') (*(it + 3))++;
-        if(*(it2) == 'U') (*(it + 4))++;
-        if(*(it2) == 'R') (*(it + 5))++;
-        if(*(it2) == '-') (*(it + 6))++;
-        if(*(it2) == 'Y') (*(it + 7))++;
-        if(*(it2) == 'K') (*(it + 8))++;
-        if(*(it2) == 'M') (*(it + 9))++;
-        if(*(it2) == 'S') (*(it + 10))++;
-        if(*(it2) == 'W') (*(it + 11))++;
-        if(*(it2) == 'B') (*(it + 12))++;
-        if(*(it2) == 'D') (*(it + 13))++;
-        if(*(it2) == 'H') (*(it + 14))++;
-        if(*(it2) == 'V') (*(it + 15))++;
-        if(*(it2) == 'N') (*(it + 16))++;
-        if(*(it2) == 'X') (*(it + 17))++;
+        encontro = false;
+        for(his = histograma.begin(); his != histograma.end(); his++){
+            if(*(it2) == (*(his)).Gen){
+                (*(his)).Repeticiones++;
+                encontro = true;
+                break;
+            }
+        }
+        if(!encontro){
+            temp.Gen = *(it2);
+            temp.Repeticiones = 1;
+            histograma.push_back(temp);
+        }
     } 
-    return Count; // Devuelve el histograma generado
+    return histograma; // Devuelve el histograma generado
 }
 
 // Determina si un carácter de búsqueda coincide con un carácter del genoma, considerando casos ambiguos.

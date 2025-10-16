@@ -69,29 +69,14 @@ void GestorDeGenomas::Histograma(std::string Nombre){
     it = VectorSecuencias.begin();
 
     if(encontro){ // Si encontró la secuencia
-        std::vector<int> Histograma = (it+i)->histogramaSecuencia(); // Obtiene histograma
-        std::vector<int>::iterator aux = Histograma.begin(); // Iterador al inicio del histograma
+        std::vector<struct histograma> Histograma = (it+i)->histogramaSecuencia(); // Obtiene histograma
+        std::vector<struct histograma>::iterator aux = Histograma.begin(); // Iterador al inicio del histograma
 
         // Imprime los conteos de cada símbolo
-        std::cout << "Histograma de " << Nombre;
-        std::cout << "\nA : " << *(aux) 
-                  << "\nC : " << *(aux+1) 
-                  << "\nG : " << *(aux+2) 
-                  << "\nT : " << *(aux+3) 
-                  << "\nU : " << *(aux+4)
-                  << "\nR : " << *(aux+5)
-                  << "\n- : " << *(aux+6)
-                  << "\nY : " << *(aux+7)
-                  << "\nK : " << *(aux+8)
-                  << "\nM : " << *(aux+9)
-                  << "\nS : " << *(aux+10)
-                  << "\nW : " << *(aux+11)
-                  << "\nB : " << *(aux+12)
-                  << "\nD : " << *(aux+13)
-                  << "\nH : " << *(aux+14)
-                  << "\nV : " << *(aux+15)
-                  << "\nN : " << *(aux+16)
-                  << "\nX : " << *(aux+17) << "\n"; 
+        std::cout << "Histograma de " << Nombre << "\n";
+        for(; aux != Histograma.end();aux++){
+            std::cout<< (*(aux)).Gen << ": " << (*(aux)).Repeticiones <<"\n";
+        }
     }else{
         std::cout << "ERROR: Secuencia invalida\n";
     }

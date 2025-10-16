@@ -68,7 +68,7 @@ public:
     bool GenomasCompletos();
 
     // Genera y devuelve el histograma acumulado de bases de la secuencia.
-    std::vector<int> histogramaSecuencia();
+    std::vector<struct histograma> histogramaSecuencia();
 
     // Cuenta cuántas veces aparece una subsecuencia dentro de todos los genomas.
     int Cantidad_Subsecuencias(std::string Subsecuencia);
