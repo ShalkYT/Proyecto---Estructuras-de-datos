@@ -1,18 +1,20 @@
 #ifndef NODO_H
 #define NODO_H
 
+#include <algorithm>
+
 struct caracter{
     char Gen;
     int Repeticiones;
 };
 
 struct nodo{
-    char caracter;
-    nodo* izq
+    struct caracter caracter;
+    nodo* izq;
     nodo* der;
     int altura;
 
-    nodo(char car);
+    nodo(struct caracter car);
     void actualizarAltura();
 };
 

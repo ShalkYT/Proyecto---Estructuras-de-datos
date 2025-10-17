@@ -1,6 +1,6 @@
 #include "nodo.h"
 
-nodo::nodo(char car){
+nodo::nodo(struct caracter car){
     caracter = car;
     izq = nullptr;
     der = nullptr;
@@ -12,11 +12,11 @@ void nodo::actualizarAltura(){
     int altDer = -1;
     
     if (izq != nullptr) {
-        altIzq = izquierda->altura;
+        altIzq = izq->altura;
     }
     
     if (der != nullptr) {
-        altDer = derecha->altura;
+        altDer = der->altura;
     }
     
     altura = 1 + std::max(altIzq, altDer);
