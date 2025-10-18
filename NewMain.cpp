@@ -125,16 +125,16 @@ void ProcesarComando(std::string comando, std::string parametros){
         ListarComandos(parametros);
     }
     else if (comando == "cargar") {
-        Gestor.CargarFASTA(parametros);  // ← Ahora es método del Gestor
+        Gestor.CargarFASTA(parametros);  
     }
     else if (comando == "guardar") {
-        Gestor.GuardarFASTA(parametros);  // ← Método del Gestor
+        Gestor.GuardarFASTA(parametros); 
     }
     else if (comando == "codificar") {
-        Gestor.CodificarHuffman(parametros);  // ← Método del Gestor
+        Gestor.CodificarHuffman(parametros);  
     }
     else if (comando == "decodificar") {
-        Gestor.DecodificarHuffman(parametros);  // ← Método del Gestor
+        Gestor.DecodificarHuffman(parametros); 
     }
     else if (comando == "listar_secuencias") {
         Gestor.ListarSecuencias();

@@ -12,6 +12,174 @@
 #include "ArbolHuffman/arbolH.h"
 #include <iostream>
 #include <fstream>
+#include <map>
+
+// Agregar al archivo GestorDeGenomas.cxx
+
+// Primero agregar estos includes al inicio del archivo:
+#include "arbolH.h"
+#include <fstream>
+#include <map>
+
+// Método de codificación Huffman
+bool GestorDeGenomas::CodificarHuffman(std::string nombreArchivo){
+    // 1. Validar que hay secuencias en memoria
+    if(VectorSecuencias.empty()){
+        std::cout << "ERROR: No hay secuencias cargadas en memoria\n";
+        return false;
+    }
+    
+    // 2. Construir histograma global de todas las secuencias
+    std::map<char, int> histogramaGlobal;
+    
+    for(size_t i = 0; i < VectorSecuencias.size(); i++){
+        std::vector<struct histograma> hist = VectorSecuencias[i].histogramaSecuencia();
+        
+        for(size_t j = 0; j < hist.size(); j++){
+            histogramaGlobal[hist[j].Gen] += hist[j].Repeticiones;
+        }
+    }
+    
+    // 3. Convertir el mapa a vector para construir el árbol
+    std::vector<struct caracter> vectorHistograma;
+    
+    for(std::map<char, int>::iterator it = histogramaGlobal.begin(); 
+        it != histogramaGlobal.end(); it++){
+        struct caracter c;
+        c.Gen = it->first;
+        c.Repeticiones = it->second;
+        vectorHistograma.push_back(c);
+    }
+    
+    // 4. Construir el árbol de Huffman
+    arbolH arbol;
+    arbol.construirArbol(vectorHistograma);
+    
+    // 5. Generar la tabla de códigos (mapa: carácter -> código binario)
+    std::map<char, std::string> tablaCodigos = arbol.generarTablaCodigos();
+    
+    // 6. Abrir archivo de salida en modo binario
+    std::ofstream archivo(nombreArchivo, std::ios::binary);
+    if(!archivo.is_open()){
+        std::cout << "ERROR: No se pudo crear el archivo " << nombreArchivo << "\n";
+        return false;
+    }
+    
+    // 7. Escribir n (cantidad de bases diferentes) - 2 bytes
+    unsigned short n = vectorHistograma.size();
+    archivo.write((char*)&n, 2);
+    
+    // 8. Escribir el histograma: para cada base escribir ci (1 byte) y fi (8 bytes)
+    for(size_t i = 0; i < vectorHistograma.size(); i++){
+        // ci: código ASCII del carácter (1 byte)
+        char codigo = vectorHistograma[i].Gen;
+        archivo.write(&codigo, 1);
+        
+        // fi: frecuencia del carácter (8 bytes)
+        long long frecuencia = vectorHistograma[i].Repeticiones;
+        archivo.write((char*)&frecuencia, 8);
+    }
+    
+    // 9. Escribir ns: cantidad de secuencias (4 bytes)
+    unsigned int ns = VectorSecuencias.size();
+    archivo.write((char*)&ns, 4);
+    
+    // 10. Para cada secuencia, escribir sus datos codificados
+    long long tamañoOriginalTotal = 0;
+    
+    for(size_t i = 0; i < VectorSecuencias.size(); i++){
+        std::string nombreSecuencia = VectorSecuencias[i].GetNombre();
+        
+        // 10.1. Escribir li: longitud del nombre (2 bytes)
+        unsigned short li = nombreSecuencia.length();
+        archivo.write((char*)&li, 2);
+        
+        // 10.2. Escribir caracteres del nombre
+        archivo.write(nombreSecuencia.c_str(), li);
+        
+        // 10.3. Construir la secuencia completa concatenando todos los genomas
+        std::vector<Genomas> genomas = VectorSecuencias[i].GetGenomas();
+        std::string secuenciaCompleta;
+        unsigned short ancho = 0;
+        
+        for(size_t j = 0; j < genomas.size(); j++){
+            std::deque<char> genomaActual = genomas[j].GetGenomas();
+            
+            // El ancho es el tamaño de la primera línea
+            if(j == 0){
+                ancho = genomaActual.size();
+            }
+            
+            // Concatenar todos los caracteres del genoma
+            for(size_t k = 0; k < genomaActual.size(); k++){
+                secuenciaCompleta += genomaActual[k];
+            }
+        }
+        
+        tamañoOriginalTotal += secuenciaCompleta.length();
+        
+        // 10.4. Escribir wi: longitud total de la secuencia (8 bytes)
+        long long wi = secuenciaCompleta.length();
+        archivo.write((char*)&wi, 8);
+        
+        // 10.5. Escribir xi: ancho de línea (2 bytes)
+        archivo.write((char*)&ancho, 2);
+        
+        // 10.6. Codificar la secuencia usando la tabla de Huffman
+        std::string codigoBinario = "";
+        
+        for(size_t j = 0; j < secuenciaCompleta.length(); j++){
+            char base = secuenciaCompleta[j];
+            
+            // Buscar el código de esta base en la tabla
+            if(tablaCodigos.find(base) != tablaCodigos.end()){
+                codigoBinario += tablaCodigos[base];
+            }
+        }
+        
+        // 10.7. Completar con ceros si no es múltiplo de 8
+        while(codigoBinario.length() % 8 != 0){
+            codigoBinario += "0";
+        }
+        
+        // 10.8. Convertir la cadena de bits a bytes y escribir
+        // Procesar de 8 en 8 bits
+        for(size_t pos = 0; pos < codigoBinario.length(); pos += 8){
+            unsigned char byte = 0;
+            
+            // Leer 8 bits y formar un byte
+            for(int bit = 0; bit < 8; bit++){
+                if(codigoBinario[pos + bit] == '1'){
+                    byte |= (1 << (7 - bit)); // Poner el bit en 1
+                }
+            }
+            
+            // Escribir el byte
+            archivo.write((char*)&byte, 1);
+        }
+    }
+    
+    archivo.close();
+    
+    // 11. Calcular y mostrar estadísticas de compresión
+    std::ifstream archivoComprimido(nombreArchivo, std::ios::binary | std::ios::ate);
+    long long tamañoComprimido = archivoComprimido.tellg();
+    archivoComprimido.close();
+    
+    double tasaCompresion = (1.0 - (double)tamañoComprimido / (double)tamañoOriginalTotal) * 100.0;
+    
+    std::cout << "Archivo codificado exitosamente: " << nombreArchivo << "\n";
+    std::cout << "Tamaño original: " << tamañoOriginalTotal << " bytes\n";
+    std::cout << "Tamaño comprimido: " << tamañoComprimido << " bytes\n";
+    std::cout << "Tasa de compresión: " << tasaCompresion << "%\n";
+    
+    return true;
+}
+
+bool DecodificarHuffman(std::string nombreArchivo)
+{
+    
+}
 
 bool GestorDeGenomas::CargarFASTA(std::string nombreArchivo){
     std::ifstream archivo(nombreArchivo);
