@@ -9,6 +9,7 @@
 // ===================================================================================
 
 #include "GestorDeGenomas.h"
+#include "ArbolHuffman/arbolH.h"
 #include <iostream>
 
 // Agrega una nueva secuencia al gestor.
