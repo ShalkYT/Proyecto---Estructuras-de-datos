@@ -30,39 +30,58 @@
 //                  Enmascara todas las ocurrencias de una subsecuencia en todas las secuencias.
 // ===================================================================================
 
-#ifndef GESTOR_DE_GENOMAS_H
-#define GESTOR_DE_GENOMAS_H
+#ifndef GESTORDEGENOMAS_H
+#define GESTORDEGENOMAS_H
 
-#include <vector>
 #include "Secuencia.h"
+#include <vector>
+#include <string>
 
-// Clase que gestiona múltiples secuencias de genomas y permite realizar
-// operaciones de análisis global sobre ellas.
-class GestorDeGenomas{
-public:
-    // Agrega una nueva secuencia al gestor.
-    void AñadirSecuencias(Secuencia S);
-
-    // Elimina todas las secuencias almacenadas en memoria.
-    void LimpiarSecuencias();
-
-    // Devuelve el conjunto de secuencias almacenadas.
-    std::vector<Secuencia> getSecuencias();
-
-    // Lista todas las secuencias mostrando su estado en consola.
-    void ListarSecuencias();
-
-    // Genera y muestra el histograma de una secuencia específica.
-    void Histograma(std::string Nombre);
-
-    // Cuenta cuántas veces aparece una subsecuencia en todas las secuencias.
-    int Cantidad_Subsecuencias(std::string Subsecuencia);
-
-    // Enmascara todas las ocurrencias de una subsecuencia en todas las secuencias.
-    int Enmascarar_Subsecuencias(std::string Subsecuencia);
-
+class GestorDeGenomas {
 private:
-    std::vector<Secuencia> VectorSecuencias;  // Conjunto de secuencias almacenadas en el gestor.
+    std::vector<Secuencia> VectorSecuencias;
+
+public:
+    // ========== OPERACIONES CON ARCHIVOS ==========
+    
+    // Carga secuencias desde un archivo FASTA
+    bool CargarFASTA(std::string nombreArchivo);
+    
+    // Guarda las secuencias en memoria a un archivo FASTA
+    bool GuardarFASTA(std::string nombreArchivo);
+    
+    // Codifica las secuencias en memoria usando Huffman
+    bool CodificarHuffman(std::string nombreArchivo);
+    
+    // Decodifica un archivo Huffman y carga las secuencias en memoria
+    bool DecodificarHuffman(std::string nombreArchivo);
+    
+    
+    // ========== GESTIÓN DE SECUENCIAS ==========
+    
+    // Añade una secuencia a la memoria
+    void AñadirSecuencias(Secuencia S);
+    
+    // Elimina todas las secuencias de la memoria
+    void LimpiarSecuencias();
+    
+    // Retorna el vector de secuencias
+    std::vector<Secuencia> getSecuencias();
+    
+    
+    // ========== CONSULTAS Y ANÁLISIS ==========
+    
+    // Lista las secuencias cargadas con información básica
+    void ListarSecuencias();
+    
+    // Muestra el histograma de una secuencia específica
+    void Histograma(std::string Nombre);
+    
+    // Cuenta cuántas veces aparece una subsecuencia
+    int Cantidad_Subsecuencias(std::string Subsecuencia);
+    
+    // Enmascara (reemplaza con 'X') todas las ocurrencias de una subsecuencia
+    int Enmascarar_Subsecuencias(std::string Subsecuencia);
 };
 
-#endif // GESTOR_DE_GENOMAS_H
+#endif // GESTORDEGENOMAS_H

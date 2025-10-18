@@ -11,6 +11,123 @@
 #include "GestorDeGenomas.h"
 #include "ArbolHuffman/arbolH.h"
 #include <iostream>
+#include <fstream>
+
+bool GestorDeGenomas::CargarFASTA(std::string nombreArchivo){
+    std::ifstream archivo(nombreArchivo);
+    
+    if(!archivo.is_open()){
+        std::cout << "ERROR: el archivo \"" << nombreArchivo << "\" no se encuentra o no puede leerse.\n";
+        return false;
+    }
+
+    LimpiarSecuencias(); // Limpiar secuencias anteriores
+    
+    std::string linea;
+    int secuenciasDescartadas = 0;
+
+    while (std::getline(archivo, linea)) {
+        if (!linea.empty() && linea[0] == '>') {
+            std::string nombreSecuencia = linea.substr(1);
+            std::vector<std::string> lineasSecuencia;
+            
+            // Leer todas las líneas de esta secuencia
+            while (std::getline(archivo, linea) && !linea.empty() && linea[0] != '>') {
+                std::string lineaLimpia;
+                for (char c : linea) {
+                    if (c != '\r' && c != '\n' && c != ' ' && c != '\t') {
+                        lineaLimpia += c;
+                    }
+                }
+                if (!lineaLimpia.empty()) {
+                    lineasSecuencia.push_back(lineaLimpia);
+                }
+            }
+
+            // Validar ancho consistente
+            bool anchoConsistente = true;
+            if (!lineasSecuencia.empty()) {
+                size_t anchoReferencia = lineasSecuencia[0].length();
+                for (const std::string& lineaSeq : lineasSecuencia) {
+                    if (lineaSeq.length() != anchoReferencia) {
+                        anchoConsistente = false;
+                        break;
+                    }
+                }
+            }
+
+            // Solo añadir si tiene ancho consistente
+            if (anchoConsistente && !lineasSecuencia.empty()) {
+                Secuencia S;
+                S.SetNombre(nombreSecuencia);
+                
+                for (const std::string& lineaSeq : lineasSecuencia) {
+                    std::deque<char> genomas;
+                    for (char c : lineaSeq) {
+                        genomas.push_back(c);
+                    }
+                    S.AñadirGenomas(genomas);
+                }
+                
+                AñadirSecuencias(S);
+            } else {
+                secuenciasDescartadas++;
+                std::cout << "ADVERTENCIA: Secuencia '" << nombreSecuencia 
+                         << "' descartada por ancho inconsistente\n";
+            }
+
+            // Si encontramos otra cabecera, retroceder
+            if (!linea.empty() && linea[0] == '>') {
+                archivo.seekg(archivo.tellg() - static_cast<std::streampos>(linea.length() + 1));
+            }
+        }
+    }
+
+    archivo.close();
+    
+    size_t totalCargadas = VectorSecuencias.size();
+    
+    if(totalCargadas == 0){
+        std::cout << nombreArchivo << " no contiene ninguna secuencia.\n";
+        return false;
+    } else if(totalCargadas == 1){
+        std::cout << "1 secuencia cargada correctamente desde " << nombreArchivo << "\n";
+    } else {
+        std::cout << totalCargadas << " secuencias cargadas correctamente desde " << nombreArchivo << "\n";
+    }
+    
+    return true;
+}
+
+bool GestorDeGenomas::GuardarFASTA(std::string nombreArchivo){
+    if(VectorSecuencias.empty()){
+        std::cout << "ERROR: no hay secuencias cargadas en memoria\n";
+        return false;
+    }
+
+    std::ofstream archivo(nombreArchivo);
+    if(!archivo.is_open()){
+        std::cout << "ERROR guardando en el archivo " << nombreArchivo << "\n";
+        return false;
+    }
+
+    for(size_t i = 0; i < VectorSecuencias.size(); i++){
+        archivo << ">" << VectorSecuencias[i].GetNombre() << "\n";
+        
+        std::vector<Genomas> genomas = VectorSecuencias[i].GetGenomas();
+        for(size_t j = 0; j < genomas.size(); j++){
+            std::deque<char> genomaActual = genomas[j].GetGenomas();
+            for(size_t k = 0; k < genomaActual.size(); k++){
+                archivo << genomaActual[k];
+            }
+            archivo << "\n";
+        }
+    }
+
+    archivo.close();
+    std::cout << "Las secuencias han sido guardadas en " << nombreArchivo << "\n";
+    return true;
+}
 
 // Agrega una nueva secuencia al gestor.
 void GestorDeGenomas::AñadirSecuencias(Secuencia S){

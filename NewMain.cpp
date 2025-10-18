@@ -119,155 +119,22 @@ void ListarComandos(std::string parametros){
     }
 }
 
-// Carga un archivo FASTA en memoria y guarda las secuencias en el gestor.
-void Cargar(std::string Nombre){
-    if (Nombre.empty()) {
-        std::cout << "ERROR: Falta el nombre del archivo\n";
-        return;
-    }
-    std::string direccion = "ArchivosPrueba/" + Nombre;
-    std::ifstream Cargar(direccion);  // Se abre el archivo en modo lectura.
-    std::cout<< direccion;
-
-    if(!Cargar.is_open()){
-        std::cout<< "ERROR: el archivo \"" << Nombre <<"\" no se encuentra o no puede leerse.\n";
-        return;
-    }
-
-    Gestor.LimpiarSecuencias(); // Se eliminan las secuencias previas.
-    std::string linea;
-    int secuenciasDescartadas = 0;  // Contador de secuencias descartadas por ancho inconsistente
-
-    // Se procesa el archivo línea por línea.
-    while (std::getline(Cargar, linea)) {
-        // Si la línea comienza con '>', significa que es el nombre de la secuencia.
-        if (!linea.empty() && linea[0] == '>') {
-            std::string nombreSecuencia = linea.substr(1);  // Remover el '>'
-            std::vector<std::string> lineasSecuencia;       // Almacenar todas las líneas de la secuencia
-            
-            // Leer todas las líneas de esta secuencia
-            while (std::getline(Cargar, linea) && !linea.empty() && linea[0] != '>') {
-                // Eliminar espacios en blanco y caracteres de control
-                std::string lineaLimpia;
-                for (char c : linea) {
-                    if (c != '\r' && c != '\n' && c != ' ' && c != '\t') {
-                        lineaLimpia += c;
-                    }
-                }
-                if (!lineaLimpia.empty()) {
-                    lineasSecuencia.push_back(lineaLimpia);
-                }
-            }
-
-            // Validar que todas las líneas tengan el mismo ancho
-            bool anchoConsistente = true;
-            if (!lineasSecuencia.empty()) {
-                size_t anchoReferencia = lineasSecuencia[0].length();
-                for (const std::string& lineaSeq : lineasSecuencia) {
-                    if (lineaSeq.length() != anchoReferencia) {
-                        anchoConsistente = false;
-                        break;
-                    }
-                }
-            }
-
-            // Solo añadir la secuencia si tiene ancho consistente
-            if (anchoConsistente && !lineasSecuencia.empty()) {
-                Secuencia S;
-                S.SetNombre(nombreSecuencia);
-                
-                // Añadir cada línea como un genoma
-                for (const std::string& lineaSeq : lineasSecuencia) {
-                    std::deque<char> genomas;
-                    for (char c : lineaSeq) {
-                        genomas.push_back(c);
-                    }
-                    S.AñadirGenomas(genomas);
-                }
-                
-                Gestor.AñadirSecuencias(S);
-            } else {
-                // Secuencia descartada por ancho inconsistente
-                secuenciasDescartadas++;
-                std::cout << "ADVERTENCIA: Secuencia '" << nombreSecuencia 
-                         << "' descartada por tener líneas de diferente ancho\n";
-            }
-
-            // Si encontramos otra cabecera mientras leíamos, retroceder para procesarla
-            if (!linea.empty() && linea[0] == '>') {
-                Cargar.seekg(Cargar.tellg() - static_cast<std::streampos>(linea.length() + 1));
-            }
-        }
-    }
-
-    // Resumen de cuántas secuencias se cargaron.
-    long long temp = (Gestor.getSecuencias()).size();
-
-    if(temp == 0){
-        std::cout << Nombre <<" no contiene ninguna secuencia.\n";
-    }
-    else if(temp == 1){
-        std::cout <<" 1 secuencia cargada correctamente desde " << Nombre << "\n";
-    }else{
-        std::cout <<" "<< temp <<" secuencias cargadas correctamente desde " << Nombre << "\n";
-    }
-
-    Cargar.close(); // Se cierra el archivo.
-}
-
-// Guarda las secuencias cargadas en memoria en un archivo de salida.
-void Guardar(std::string Nombre){
-    if (Nombre.empty()) {
-        std::cout << "ERROR: Falta el nombre del archivo\n";
-        return;
-    }
-
-    if((Gestor.getSecuencias()).empty()){
-        std::cout << "ERROR: no hay secuencias cargadas en memoria\n";
-        return;
-    }
-
-    std::ofstream Guardar(Nombre); // Abrir archivo en modo escritura.
-
-    if(!Guardar.is_open()){
-        std::cout << "ERROR guardando en el archivo " << Nombre << "\n";
-        return;
-    }
-
-    // Obtener todas las secuencias cargadas.
-    std::vector<Secuencia> temp = Gestor.getSecuencias();
-
-    // Recorrer cada secuencia cargada.
-    for(std::vector<Secuencia>::iterator teit = temp.begin(); teit != temp.end(); teit++){
-        Guardar << ">" << teit->GetNombre() << "\n"; // Imprimir cabecera con nombre.
-
-        // Obtener los genomas de cada secuencia.
-        std::vector<Genomas> sub_temp = teit->GetGenomas();
-        for(std::vector<Genomas>::iterator suit = sub_temp.begin(); suit != sub_temp.end() ; suit++){
-            std::deque<char> Genomas = suit->GetGenomas();
-            std::deque<char>::iterator itchar;
-
-            // Recorrer cada carácter de los genomas y guardarlo en el archivo.
-            for(itchar = Genomas.begin() ;itchar != Genomas.end(); itchar++){
-                Guardar << *(itchar);
-            }
-            Guardar << "\n"; // Fin de línea para cada genoma.
-        }
-    }
-
-    std::cout << "Las secuencias han sido guardadas en " << Nombre << "\n";
-    Guardar.close();
-}
-
 // Procesa el comando ingresado y ejecuta la acción correspondiente.
-void ProcesarComando(std::string comando,std::string parametros){
-    int temp;
-
+void ProcesarComando(std::string comando, std::string parametros){
     if (comando == "ayuda") {
         ListarComandos(parametros);
     }
     else if (comando == "cargar") {
-        Cargar(parametros);
+        Gestor.CargarFASTA(parametros);  // ← Ahora es método del Gestor
+    }
+    else if (comando == "guardar") {
+        Gestor.GuardarFASTA(parametros);  // ← Método del Gestor
+    }
+    else if (comando == "codificar") {
+        Gestor.CodificarHuffman(parametros);  // ← Método del Gestor
+    }
+    else if (comando == "decodificar") {
+        Gestor.DecodificarHuffman(parametros);  // ← Método del Gestor
     }
     else if (comando == "listar_secuencias") {
         Gestor.ListarSecuencias();
@@ -280,36 +147,25 @@ void ProcesarComando(std::string comando,std::string parametros){
         Gestor.Histograma(parametros);
     }
     else if(comando == "es_subsecuencia"){
-        if(((Gestor.getSecuencias()).size()) == 0){
-            std::cout << "ERROR: No hay secuencias cargadas.\n";
-        }else{
-            temp = Gestor.Cantidad_Subsecuencias(parametros);
-            if(temp == 0){
-                std::cout << "La subsecuencia dada no existe dentro de las secuencias cargadas en memoria.\n";
-            }else{
-                std::cout << "La subsecuencia dada se repite " << temp << " veces dentro de las secuencias cargadas en memoria\n";
-            }
+        int temp = Gestor.Cantidad_Subsecuencias(parametros);
+        if(temp == 0){
+            std::cout << "La subsecuencia no existe\n";
+        } else {
+            std::cout << "La subsecuencia se repite " << temp << " veces\n";
         }
     }
     else if(comando == "enmascarar"){
-        if(((Gestor.getSecuencias()).size()) == 0){
-            std::cout << "No hay secuencias cargadas.\n";
-        }else{
-            temp = Gestor.Enmascarar_Subsecuencias(parametros);
-            if(temp == 0){
-                std::cout << "La subsecuencia dada no existe dentro de las secuencias cargadas en memoria, por lo tanto no se enmascaro nada.\n";
-            }else{
-                std::cout<< temp << " subsecuencias han sido enmascaradas de las secuencias cargadas en memoria\n";
-            }
+        int temp = Gestor.Enmascarar_Subsecuencias(parametros);
+        if(temp == 0){
+            std::cout << "La subsecuencia no existe\n";
+        } else {
+            std::cout << temp << " subsecuencias enmascaradas\n";
         }
-    }
-    else if(comando == "guardar") {
-        Guardar(parametros);
     }
     else if(comando == "salir"){
         exit(0);
     }
-    else{
+    else {
         std::cout << "Comando no reconocido\n";
     }
 }
