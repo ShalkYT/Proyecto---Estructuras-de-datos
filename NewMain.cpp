@@ -6,7 +6,7 @@
 #include "Declaracion/GestorDeGenomas.h"
 #include "Declaracion/Secuencia.h"
 #include "Declaracion/Genomas.h"
-#include "ArbolHuffman/arbolH.h"
+
 
 // Limpia la pantalla de la consola usando secuencias ANSI.
 void LimpiarPantalla();
