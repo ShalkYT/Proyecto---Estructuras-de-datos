@@ -111,7 +111,7 @@ void ListarComandos(std::string parametros){
     if (parametros.empty()) {
         std::cout << "Comandos disponibles:\n";
         std::cout << "·cargar \n·listar_secuencias \n·histograma \n·es_subsecuencia \n";
-        std::cout << "·enmascarar \n·guardar \n";
+        std::cout << "·enmascarar \n·guardar \n·codificar \n·decodificar \n";
         std::cout << "·ayuda \n·salir \n";
         std::cout << "Ingrese 'ayuda <comando>' para obtener ayuda sobre un comando específico.\n";
     } else {
