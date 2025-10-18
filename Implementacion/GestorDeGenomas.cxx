@@ -9,7 +9,7 @@
 // ===================================================================================
 
 #include "GestorDeGenomas.h"
-#include "ArbolHuffman/arbolH.h"
+#include "../ArbolHuffman/arbolH.h"
 #include <iostream>
 #include <fstream>
 #include <map>
@@ -168,7 +168,7 @@ bool GestorDeGenomas::CodificarHuffman(std::string nombreArchivo){
     
     double tasaCompresion = (1.0 - (double)tamañoComprimido / (double)tamañoOriginalTotal) * 100.0;
     
-    std::cout << "Archivo codificado exitosamente: " << nombreArchivo << "\n";
+    std::cout << "Codificacion exitosa: " << nombreArchivo << "\n";
     std::cout << "Tamaño original: " << tamañoOriginalTotal << " bytes\n";
     std::cout << "Tamaño comprimido: " << tamañoComprimido << " bytes\n";
     std::cout << "Tasa de compresión: " << tasaCompresion << "%\n";
