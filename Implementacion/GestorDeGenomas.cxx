@@ -12,6 +12,7 @@
 #include "../ArbolHuffman/arbolH.h"
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <map>
 
 
@@ -169,10 +170,7 @@ void GestorDeGenomas::CodificarHuffman(std::string nombreArchivo){
 
 }
 
-void DecodificarHuffman(std::string nombreArchivo)
-{
 
-}
 
 bool GestorDeGenomas::CargarFASTA(std::string nombreArchivo){
     std::ifstream archivo(nombreArchivo);

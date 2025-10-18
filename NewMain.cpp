@@ -134,7 +134,7 @@ void ProcesarComando(std::string comando, std::string parametros){
         Gestor.CodificarHuffman(parametros);  
     }
     else if (comando == "decodificar") {
-        Gestor.DecodificarHuffman(parametros); 
+        std::cout << "Decodificar no implementado aún.\n";
     }
     else if (comando == "listar_secuencias") {
         Gestor.ListarSecuencias();
