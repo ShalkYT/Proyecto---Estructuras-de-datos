@@ -51,10 +51,10 @@ public:
     bool GuardarFASTA(std::string nombreArchivo);
     
     // Codifica las secuencias en memoria usando Huffman
-    bool CodificarHuffman(std::string nombreArchivo);
+    void CodificarHuffman(std::string nombreArchivo);
     
     // Decodifica un archivo Huffman y carga las secuencias en memoria
-    bool DecodificarHuffman(std::string nombreArchivo);
+    void DecodificarHuffman(std::string nombreArchivo);
     
     
     // ========== GESTIÓN DE SECUENCIAS ==========

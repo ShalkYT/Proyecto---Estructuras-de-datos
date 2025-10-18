@@ -14,19 +14,12 @@
 #include <fstream>
 #include <map>
 
-// Agregar al archivo GestorDeGenomas.cxx
-
-// Primero agregar estos includes al inicio del archivo:
-#include "arbolH.h"
-#include <fstream>
-#include <map>
 
 // Método de codificación Huffman
-bool GestorDeGenomas::CodificarHuffman(std::string nombreArchivo){
+void GestorDeGenomas::CodificarHuffman(std::string nombreArchivo){
     // 1. Validar que hay secuencias en memoria
     if(VectorSecuencias.empty()){
         std::cout << "ERROR: No hay secuencias cargadas en memoria\n";
-        return false;
     }
     
     // 2. Construir histograma global de todas las secuencias
@@ -62,7 +55,7 @@ bool GestorDeGenomas::CodificarHuffman(std::string nombreArchivo){
     std::ofstream archivo(nombreArchivo, std::ios::binary);
     if(!archivo.is_open()){
         std::cout << "ERROR: No se pudo crear el archivo " << nombreArchivo << "\n";
-        return false;
+
     }
     
     // 7. Escribir n (cantidad de bases diferentes) - 2 bytes
@@ -173,12 +166,12 @@ bool GestorDeGenomas::CodificarHuffman(std::string nombreArchivo){
     std::cout << "Tamaño comprimido: " << tamañoComprimido << " bytes\n";
     std::cout << "Tasa de compresión: " << tasaCompresion << "%\n";
     
-    return true;
+
 }
 
-bool DecodificarHuffman(std::string nombreArchivo)
+void DecodificarHuffman(std::string nombreArchivo)
 {
-    
+
 }
 
 bool GestorDeGenomas::CargarFASTA(std::string nombreArchivo){
