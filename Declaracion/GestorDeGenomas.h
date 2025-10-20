@@ -54,8 +54,7 @@ public:
     void CodificarHuffman(std::string nombreArchivo);
     
     // Decodifica un archivo Huffman y carga las secuencias en memoria
-
-    
+     void DecodificarHuffman(std::string parametros);
     
     // ========== GESTIÓN DE SECUENCIAS ==========
     

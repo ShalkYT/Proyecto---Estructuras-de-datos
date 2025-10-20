@@ -85,6 +85,10 @@ void MostrarAyudaComando(std::string comando) {
         std::cout << "Uso: codificar nombre_archivo.fabin\n";
         std::cout << "Genera un archivo binario con la codificación de Huffman\n";
     }
+    else if (comando == "decodificar") {
+        std::cout << "Uso: decodificar archivo_entrada.fabin archivo_salida.fa\n";
+        std::cout << "Decodifica un archivo binario comprimido con Huffman y lo guarda como FASTA\n";
+    }
     else if (comando == "ruta_mas_corta") {
         std::cout << "Uso: ruta_mas_corta descripcion_secuencia i j x y\n";
         std::cout << "Imprime la secuencia de vértices que describen la ruta más corta entre dos posiciones en la matriz de la secuencia.\n";
@@ -134,7 +138,8 @@ void ProcesarComando(std::string comando, std::string parametros){
         Gestor.CodificarHuffman(parametros);  
     }
     else if (comando == "decodificar") {
-        std::cout << "Decodificar no implementado aún.\n";
+        Gestor.DecodificarHuffman(parametros);
+
     }
     else if (comando == "listar_secuencias") {
         Gestor.ListarSecuencias();

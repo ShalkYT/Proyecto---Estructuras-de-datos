@@ -171,6 +171,165 @@ void GestorDeGenomas::CodificarHuffman(std::string nombreArchivo){
 }
 
 
+// Método de decodificación Huffman
+
+void GestorDeGenomas::DecodificarHuffman(std::string parametros){
+    // Validar y separar parámetros (archivo entrada y salida)
+    size_t pos = parametros.find(' ');
+    
+    if(pos == std::string::npos){
+        std::cout << "ERROR: Debe especificar archivo de entrada y archivo de salida\n";
+        std::cout << "Uso: decodificar archivo_entrada.fabin archivo_salida.fa\n";
+        return;
+    }
+    
+    std::string nombreArchivo = parametros.substr(0, pos);
+    std::string archivoSalida = parametros.substr(pos + 1);
+    
+    // Eliminar espacios en blanco adicionales
+    while(!archivoSalida.empty() && archivoSalida[0] == ' '){
+        archivoSalida = archivoSalida.substr(1);
+    }
+    
+    if(archivoSalida.empty()){
+        std::cout << "ERROR: Debe especificar un archivo de salida\n";
+        std::cout << "Uso: decodificar archivo_entrada.fabin archivo_salida.fa\n";
+        return;
+    }
+    
+    // Abrir archivo binario de entrada
+    std::ifstream archivo(nombreArchivo, std::ios::binary);
+    if(!archivo.is_open()){
+        std::cout << "ERROR: No se pudo abrir el archivo " << nombreArchivo << "\n";
+        return;
+    }
+    
+    // Leer n (cantidad de bases diferentes) 
+    unsigned short n;
+    archivo.read((char*)&n, 2);
+    
+    // Leer el histograma
+    std::vector<struct caracter> vectorHistograma;
+    
+    for(unsigned short i = 0; i < n; i++){
+        // Leer código ASCII del carácter 
+        char codigo;
+        archivo.read(&codigo, 1);
+        
+        // Leer frecuencia del carácter 
+        long long frecuencia;
+        archivo.read((char*)&frecuencia, 8);
+        
+        // Añadir al vector de histograma
+        struct caracter c;
+        c.Gen = codigo;
+        c.Repeticiones = frecuencia;
+        vectorHistograma.push_back(c);
+    }
+    
+    // Reconstruir el árbol de Huffman con el mismo histograma
+    arbolH arbol;
+    arbol.construirArbol(vectorHistograma);
+    
+    // Leer cantidad de secuencias 
+    unsigned int ns;
+    archivo.read((char*)&ns, 4);
+    
+    // Limpiar las secuencias actuales en memoria
+    LimpiarSecuencias();
+    
+    // Para cada secuencia, leer y decodificar
+    for(unsigned int secIdx = 0; secIdx < ns; secIdx++){
+        // Leer longitud del nombre 
+        unsigned short li;
+        archivo.read((char*)&li, 2);
+        
+        // Leer el nombre de la secuencia
+        char* bufferNombre = new char[li + 1];
+        archivo.read(bufferNombre, li);
+        bufferNombre[li] = '\0';
+        std::string nombreSecuencia(bufferNombre);
+        delete[] bufferNombre;
+        
+        // Leer longitud total de la secuencia 
+        long long wi;
+        archivo.read((char*)&wi, 8);
+        
+        // Leer ancho de línea 
+        unsigned short ancho;
+        archivo.read((char*)&ancho, 2);
+        
+        // Calcular cuántos bytes ocupa la secuencia codificada
+        std::string codigoBinario = "";
+        std::string secuenciaDecodificada = "";
+        
+        nodo* actual = arbol.getRaiz();
+        long long caracteresDecodificados = 0;
+        
+        // Leer y decodificar byte por byte hasta completar wi caracteres
+        while(caracteresDecodificados < wi && archivo.good()){
+            unsigned char byte;
+            archivo.read((char*)&byte, 1);
+            
+            // Procesar cada bit del byte
+            for(int bit = 7; bit >= 0; bit--){
+                char bitChar = ((byte >> bit) & 1) ? '1' : '0';
+                
+                // Navegar por el árbol según el bit
+                if(bitChar == '0'){
+                    actual = actual->izq;
+                } else {
+                    actual = actual->der;
+                }
+                
+                // Si llegamos a una hoja, añadir el carácter
+                if(actual != nullptr && actual->izq == nullptr && actual->der == nullptr){
+                    secuenciaDecodificada += actual->caracter.Gen;
+                    caracteresDecodificados++;
+                    actual = arbol.getRaiz(); // Reiniciar para el siguiente carácter
+                    
+                    // Si ya tenemos todos los caracteres, salir
+                    if(caracteresDecodificados >= wi){
+                        break;
+                    }
+                }
+            }
+        }
+        
+        // Crear el objeto Secuencia y dividir en líneas según el ancho
+        Secuencia S;
+        S.SetNombre(nombreSecuencia);
+        
+        // Dividir la secuencia en líneas del ancho especificado
+        for(size_t pos = 0; pos < secuenciaDecodificada.length(); pos += ancho){
+            std::deque<char> linea;
+            
+            // Tomar hasta 'ancho' caracteres o los que queden
+            size_t longitudLinea = std::min((size_t)ancho, secuenciaDecodificada.length() - pos);
+            
+            for(size_t i = 0; i < longitudLinea; i++){
+                linea.push_back(secuenciaDecodificada[pos + i]);
+            }
+            
+            S.AñadirGenomas(linea);
+        }
+        
+        // Añadir la secuencia al gestor
+        AñadirSecuencias(S);
+    }
+    
+    archivo.close();
+    
+    // Guardar las secuencias decodificadas en un archivo FASTA
+    if(!archivoSalida.empty()){
+        GuardarFASTA(archivoSalida);
+    }
+    
+    std::cout << "Decodificación exitosa: " << ns << " secuencia(s) recuperada(s)\n";
+    if(!archivoSalida.empty()){
+        std::cout << "Secuencias guardadas en: " << archivoSalida << "\n";
+    }
+}
 
 bool GestorDeGenomas::CargarFASTA(std::string nombreArchivo){
     std::ifstream archivo(nombreArchivo);
