@@ -53,7 +53,8 @@ void GestorDeGenomas::CodificarHuffman(std::string nombreArchivo){
     std::map<char, std::string> tablaCodigos = arbol.generarTablaCodigos();
     
     // 6. Abrir archivo de salida en modo binario
-    std::ofstream archivo(nombreArchivo, std::ios::binary);
+    std::string direccion = "ArchivosPrueba/";
+    std::ofstream archivo(direccion + nombreArchivo, std::ios::binary);
     if(!archivo.is_open()){
         std::cout << "ERROR: No se pudo crear el archivo " << nombreArchivo << "\n";
 
@@ -185,7 +186,8 @@ void GestorDeGenomas::DecodificarHuffman(std::string parametros){
     
     std::string nombreArchivo = parametros.substr(0, pos);
     std::string archivoSalida = parametros.substr(pos + 1);
-    
+    std::cout << nombreArchivo <<" "<< archivoSalida;
+
     // Eliminar espacios en blanco adicionales
     while(!archivoSalida.empty() && archivoSalida[0] == ' '){
         archivoSalida = archivoSalida.substr(1);
@@ -198,7 +200,8 @@ void GestorDeGenomas::DecodificarHuffman(std::string parametros){
     }
     
     // Abrir archivo binario de entrada
-    std::ifstream archivo(nombreArchivo, std::ios::binary);
+    std::string direccion = "ArchivosPrueba/";
+    std::ifstream archivo(direccion + nombreArchivo, std::ios::binary);
     if(!archivo.is_open()){
         std::cout << "ERROR: No se pudo abrir el archivo " << nombreArchivo << "\n";
         return;
@@ -332,7 +335,8 @@ void GestorDeGenomas::DecodificarHuffman(std::string parametros){
 }
 
 bool GestorDeGenomas::CargarFASTA(std::string nombreArchivo){
-    std::ifstream archivo(nombreArchivo);
+    std::string direccion = "ArchivosPrueba/";
+    std::ifstream archivo(direccion + nombreArchivo);
     
     if(!archivo.is_open()){
         std::cout << "ERROR: el archivo \"" << nombreArchivo << "\" no se encuentra o no puede leerse.\n";
@@ -423,7 +427,8 @@ bool GestorDeGenomas::GuardarFASTA(std::string nombreArchivo){
         return false;
     }
 
-    std::ofstream archivo(nombreArchivo);
+    std::string direccion = "ArchivosPrueba/";
+    std::ofstream archivo(direccion + nombreArchivo);
     if(!archivo.is_open()){
         std::cout << "ERROR guardando en el archivo " << nombreArchivo << "\n";
         return false;
