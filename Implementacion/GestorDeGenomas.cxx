@@ -263,41 +263,34 @@ void GestorDeGenomas::DecodificarHuffman(std::string parametros){
         archivo.read((char*)&ancho, 2);
         
         // Calcular cuántos bytes ocupa la secuencia codificada
-        std::string codigoBinario = "";
+       std::string codigoBinario = "";
         std::string secuenciaDecodificada = "";
         
-        nodo* actual = arbol.getRaiz();
-        long long caracteresDecodificados = 0;
-        
-        // Leer y decodificar byte por byte hasta completar wi caracteres
-        while(caracteresDecodificados < wi && archivo.good()){
+        // Leer byte por byte y convertir a string binario
+        // Decodificamos progresivamente hasta obtener wi caracteres
+        while(secuenciaDecodificada.length() < (size_t)wi && archivo.good()){
             unsigned char byte;
             archivo.read((char*)&byte, 1);
             
-            // Procesar cada bit del byte
+            // Convertir byte a string de 8 bits
             for(int bit = 7; bit >= 0; bit--){
-                char bitChar = ((byte >> bit) & 1) ? '1' : '0';
-                
-                // Navegar por el árbol según el bit
-                if(bitChar == '0'){
-                    actual = actual->izq;
-                } else {
-                    actual = actual->der;
-                }
-                
-                // Si llegamos a una hoja, añadir el carácter
-                if(actual != nullptr && actual->izq == nullptr && actual->der == nullptr){
-                    secuenciaDecodificada += actual->caracter.Gen;
-                    caracteresDecodificados++;
-                    actual = arbol.getRaiz(); // Reiniciar para el siguiente carácter
-                    
-                    // Si ya tenemos todos los caracteres, salir
-                    if(caracteresDecodificados >= wi){
-                        break;
-                    }
-                }
+                codigoBinario += ((byte >> bit) & 1) ? '1' : '0';
+            }
+            
+            // Decodificar lo que llevamos hasta ahora
+            secuenciaDecodificada = arbol.decodificarSecuencia(codigoBinario);
+            
+            // Si ya tenemos suficientes caracteres, salir
+            if(secuenciaDecodificada.length() >= (size_t)wi){
+                break;
             }
         }
+        
+        // Truncar al tamaño exacto (por si había padding)
+        if(secuenciaDecodificada.length() > (size_t)wi){
+            secuenciaDecodificada = secuenciaDecodificada.substr(0, wi);
+        }
+        
         
         // Crear el objeto Secuencia y dividir en líneas según el ancho
         Secuencia S;
