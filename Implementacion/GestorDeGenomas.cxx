@@ -14,16 +14,17 @@
 #include <fstream>
 #include <sstream>
 #include <map>
+#include <iomanip>  
 
 
 // Método de codificación Huffman
 void GestorDeGenomas::CodificarHuffman(std::string nombreArchivo){
-    // 1. Validar que hay secuencias en memoria
+    // Validar que hay secuencias en memoria
     if(VectorSecuencias.empty()){
         std::cout << "ERROR: No hay secuencias cargadas en memoria\n";
     }
     
-    // 2. Construir histograma global de todas las secuencias
+    //  Construir histograma global de todas las secuencias
     std::map<char, int> histogramaGlobal;
     
     for(size_t i = 0; i < VectorSecuencias.size(); i++){
@@ -34,7 +35,7 @@ void GestorDeGenomas::CodificarHuffman(std::string nombreArchivo){
         }
     }
     
-    // 3. Convertir el mapa a vector para construir el árbol
+    //  Convertir el mapa a vector para construir el árbol
     std::vector<struct caracter> vectorHistograma;
     
     for(std::map<char, int>::iterator it = histogramaGlobal.begin(); 
@@ -45,14 +46,14 @@ void GestorDeGenomas::CodificarHuffman(std::string nombreArchivo){
         vectorHistograma.push_back(c);
     }
     
-    // 4. Construir el árbol de Huffman
+    //  Construir el árbol de Huffman
     arbolH arbol;
     arbol.construirArbol(vectorHistograma);
     
-    // 5. Generar la tabla de códigos (mapa: carácter -> código binario)
+    //  Generar la tabla de códigos (mapa: carácter -> código binario)
     std::map<char, std::string> tablaCodigos = arbol.generarTablaCodigos();
     
-    // 6. Abrir archivo de salida en modo binario
+    //  Abrir archivo de salida en modo binario
     std::string direccion = "ArchivosPrueba/";
     std::ofstream archivo(direccion + nombreArchivo, std::ios::binary);
     if(!archivo.is_open()){
@@ -60,11 +61,11 @@ void GestorDeGenomas::CodificarHuffman(std::string nombreArchivo){
 
     }
     
-    // 7. Escribir n (cantidad de bases diferentes) - 2 bytes
+    //  Escribir n (cantidad de bases diferentes) - 2 bytes
     unsigned short n = vectorHistograma.size();
     archivo.write((char*)&n, 2);
     
-    // 8. Escribir el histograma: para cada base escribir ci (1 byte) y fi (8 bytes)
+    //  Escribir el histograma: para cada base escribir ci (1 byte) y fi (8 bytes)
     for(size_t i = 0; i < vectorHistograma.size(); i++){
         // ci: código ASCII del carácter (1 byte)
         char codigo = vectorHistograma[i].Gen;
@@ -75,24 +76,24 @@ void GestorDeGenomas::CodificarHuffman(std::string nombreArchivo){
         archivo.write((char*)&frecuencia, 8);
     }
     
-    // 9. Escribir ns: cantidad de secuencias (4 bytes)
+    //  Escribir ns: cantidad de secuencias (4 bytes)
     unsigned int ns = VectorSecuencias.size();
     archivo.write((char*)&ns, 4);
     
-    // 10. Para cada secuencia, escribir sus datos codificados
+    // Para cada secuencia, escribir sus datos codificados
     long long tamañoOriginalTotal = 0;
     
     for(size_t i = 0; i < VectorSecuencias.size(); i++){
         std::string nombreSecuencia = VectorSecuencias[i].GetNombre();
         
-        // 10.1. Escribir li: longitud del nombre (2 bytes)
+        //  Escribir li: longitud del nombre (2 bytes)
         unsigned short li = nombreSecuencia.length();
         archivo.write((char*)&li, 2);
         
-        // 10.2. Escribir caracteres del nombre
+        //  Escribir caracteres del nombre
         archivo.write(nombreSecuencia.c_str(), li);
         
-        // 10.3. Construir la secuencia completa concatenando todos los genomas
+        //  Construir la secuencia completa concatenando todos los genomas
         std::vector<Genomas> genomas = VectorSecuencias[i].GetGenomas();
         std::string secuenciaCompleta;
         unsigned short ancho = 0;
@@ -113,14 +114,14 @@ void GestorDeGenomas::CodificarHuffman(std::string nombreArchivo){
         
         tamañoOriginalTotal += secuenciaCompleta.length();
         
-        // 10.4. Escribir wi: longitud total de la secuencia (8 bytes)
+        //  Escribir wi: longitud total de la secuencia (8 bytes)
         long long wi = secuenciaCompleta.length();
         archivo.write((char*)&wi, 8);
         
-        // 10.5. Escribir xi: ancho de línea (2 bytes)
+        //  Escribir xi: ancho de línea (2 bytes)
         archivo.write((char*)&ancho, 2);
         
-        // 10.6. Codificar la secuencia usando la tabla de Huffman
+        //  Codificar la secuencia usando la tabla de Huffman
         std::string codigoBinario = "";
         
         for(size_t j = 0; j < secuenciaCompleta.length(); j++){
@@ -132,12 +133,12 @@ void GestorDeGenomas::CodificarHuffman(std::string nombreArchivo){
             }
         }
         
-        // 10.7. Completar con ceros si no es múltiplo de 8
+        //  Completar con ceros si no es múltiplo de 8
         while(codigoBinario.length() % 8 != 0){
             codigoBinario += "0";
         }
         
-        // 10.8. Convertir la cadena de bits a bytes y escribir
+        // Convertir la cadena de bits a bytes y escribir
         // Procesar de 8 en 8 bits
         for(size_t pos = 0; pos < codigoBinario.length(); pos += 8){
             unsigned char byte = 0;
@@ -156,17 +157,28 @@ void GestorDeGenomas::CodificarHuffman(std::string nombreArchivo){
     
     archivo.close();
     
-    // 11. Calcular y mostrar estadísticas de compresión
-    std::ifstream archivoComprimido(nombreArchivo, std::ios::binary | std::ios::ate);
+    // CALCULAR ESTADÍSTICAS CORRECTAMENTE
+    std::ifstream archivoComprimido(direccion + nombreArchivo, std::ios::binary | std::ios::ate);
+    
+    if(!archivoComprimido.is_open()){
+        std::cout << "ERROR: No se pudo abrir el archivo comprimido para estadísticas\n";
+        return;
+    }
+    
     long long tamañoComprimido = archivoComprimido.tellg();
     archivoComprimido.close();
     
+    // Calcular estadísticas
     double tasaCompresion = (1.0 - (double)tamañoComprimido / (double)tamañoOriginalTotal) * 100.0;
+    double ratioCompresion = (double)tamañoOriginalTotal / (double)tamañoComprimido;
     
-    std::cout << "Codificacion exitosa: " << nombreArchivo << "\n";
+    std::cout << "=== ESTADÍSTICAS DE COMPRESIÓN ===\n";
+    std::cout << "Archivo: " << nombreArchivo << "\n";
     std::cout << "Tamaño original: " << tamañoOriginalTotal << " bytes\n";
     std::cout << "Tamaño comprimido: " << tamañoComprimido << " bytes\n";
-    std::cout << "Tasa de compresión: " << tasaCompresion << "%\n";
+    std::cout << "Espacio ahorrado: " << (tamañoOriginalTotal - tamañoComprimido) << " bytes\n";
+    std::cout << "Tasa de compresión: " << std::fixed << std::setprecision(2) << tasaCompresion << "%\n";
+    std::cout << "Ratio de compresión: " << std::fixed << std::setprecision(2) << ratioCompresion << ":1\n";
     
 
 }
@@ -263,41 +275,34 @@ void GestorDeGenomas::DecodificarHuffman(std::string parametros){
         archivo.read((char*)&ancho, 2);
         
         // Calcular cuántos bytes ocupa la secuencia codificada
-        std::string codigoBinario = "";
+       std::string codigoBinario = "";
         std::string secuenciaDecodificada = "";
         
-        nodo* actual = arbol.getRaiz();
-        long long caracteresDecodificados = 0;
-        
-        // Leer y decodificar byte por byte hasta completar wi caracteres
-        while(caracteresDecodificados < wi && archivo.good()){
+        // Leer byte por byte y convertir a string binario
+        // Decodificamos progresivamente hasta obtener wi caracteres
+        while(secuenciaDecodificada.length() < (size_t)wi && archivo.good()){
             unsigned char byte;
             archivo.read((char*)&byte, 1);
             
-            // Procesar cada bit del byte
+            // Convertir byte a string de 8 bits
             for(int bit = 7; bit >= 0; bit--){
-                char bitChar = ((byte >> bit) & 1) ? '1' : '0';
-                
-                // Navegar por el árbol según el bit
-                if(bitChar == '0'){
-                    actual = actual->izq;
-                } else {
-                    actual = actual->der;
-                }
-                
-                // Si llegamos a una hoja, añadir el carácter
-                if(actual != nullptr && actual->izq == nullptr && actual->der == nullptr){
-                    secuenciaDecodificada += actual->caracter.Gen;
-                    caracteresDecodificados++;
-                    actual = arbol.getRaiz(); // Reiniciar para el siguiente carácter
-                    
-                    // Si ya tenemos todos los caracteres, salir
-                    if(caracteresDecodificados >= wi){
-                        break;
-                    }
-                }
+                codigoBinario += ((byte >> bit) & 1) ? '1' : '0';
+            }
+            
+            // Decodificar lo que llevamos hasta ahora
+            secuenciaDecodificada = arbol.decodificarSecuencia(codigoBinario);
+            
+            // Si ya tenemos suficientes caracteres, salir
+            if(secuenciaDecodificada.length() >= (size_t)wi){
+                break;
             }
         }
+        
+        // Truncar al tamaño exacto (por si había padding)
+        if(secuenciaDecodificada.length() > (size_t)wi){
+            secuenciaDecodificada = secuenciaDecodificada.substr(0, wi);
+        }
+        
         
         // Crear el objeto Secuencia y dividir en líneas según el ancho
         Secuencia S;
@@ -366,19 +371,26 @@ bool GestorDeGenomas::CargarFASTA(std::string nombreArchivo){
                 }
             }
 
-            // Validar ancho consistente
+            // Validar ancho consistente PERMITIENDO que la última línea sea diferente
             bool anchoConsistente = true;
             if (!lineasSecuencia.empty()) {
                 size_t anchoReferencia = lineasSecuencia[0].length();
-                for (const std::string& lineaSeq : lineasSecuencia) {
-                    if (lineaSeq.length() != anchoReferencia) {
+                
+                // Verificar que todas las líneas excepto posiblemente la última tengan el mismo ancho
+                for (size_t i = 0; i < lineasSecuencia.size() - 1; i++) {
+                    if (lineasSecuencia[i].length() != anchoReferencia) {
                         anchoConsistente = false;
                         break;
                     }
                 }
+                
+                // La última línea puede ser más corta o más larga, pero no vacía
+                if (anchoConsistente && lineasSecuencia.back().empty()) {
+                    anchoConsistente = false;
+                }
             }
 
-            // Solo añadir si tiene ancho consistente
+            // Solo añadir si tiene ancho consistente (con la flexibilidad para la última línea)
             if (anchoConsistente && !lineasSecuencia.empty()) {
                 Secuencia S;
                 S.SetNombre(nombreSecuencia);
@@ -603,3 +615,4 @@ int GestorDeGenomas::Enmascarar_Subsecuencias(std::string Subsecuencia){
     }
     return Contador; // Devuelve el total enmascarado
 }
+
