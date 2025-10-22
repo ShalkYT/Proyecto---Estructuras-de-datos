@@ -76,7 +76,7 @@ std::vector<struct histograma> Secuencia::histogramaSecuencia(){
             }
             if(!encontro){
                 temp_his.Gen = (*(aux)).Gen;
-                temp_his.Repeticiones = 1;
+                temp_his.Repeticiones = (*(aux)).Repeticiones;
                 histograma.push_back(temp_his);
             }
         }
