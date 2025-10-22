@@ -482,77 +482,50 @@ void GestorDeGenomas::ListarSecuencias(){
 
     std::cout << "Hay " << VectorSecuencias.size() <<" secuencias cargadas en memoria:\n";
     
-    std::vector<Secuencia>::iterator it; // Iterador de secuencias
+    std::vector<Secuencia>::iterator it;
     
-    for(it = VectorSecuencias.begin(); it != VectorSecuencias.end(); it++){ // Recorre cada secuencia
-        int tipos_bases = 0; // Contador de tipos de bases diferentes
-        std::vector<struct histograma> histograma = it->histogramaSecuencia(); // CORRECCIÓN: usar struct histograma
+    for(it = VectorSecuencias.begin(); it != VectorSecuencias.end(); it++){
+        std::vector<struct histograma> histograma = it->histogramaSecuencia();
         
-        // Crear un mapa para facilitar el acceso a las frecuencias
+        // Verificar presencia de bases
         bool tiene_A = false, tiene_C = false, tiene_G = false, tiene_T = false, tiene_U = false;
+        bool tiene_ambiguas = false;
         
-        // Recorrer el histograma para verificar qué bases están presentes
-        for(size_t i = 0; i < histograma.size(); i++){
-            char base = histograma[i].Gen;
-            
-            if(base == 'A' && histograma[i].Repeticiones > 0) tiene_A = true;
-            if(base == 'C' && histograma[i].Repeticiones > 0) tiene_C = true;
-            if(base == 'G' && histograma[i].Repeticiones > 0) tiene_G = true;
-            if(base == 'T' && histograma[i].Repeticiones > 0) tiene_T = true;
-            if(base == 'U' && histograma[i].Repeticiones > 0) tiene_U = true;
-        }
-        
-        // Contar tipos de bases básicas presentes
-        if(tiene_A) tipos_bases++;
-        if(tiene_C) tipos_bases++;
-        if(tiene_G) tipos_bases++;
-        if(tiene_T) tipos_bases++;
-        if(tiene_U) tipos_bases++;
-        
-        // Verificar bases ambiguas que representen tipos faltantes
+        // Primero verificar todas las bases en el histograma
         for(size_t i = 0; i < histograma.size(); i++){
             char base = histograma[i].Gen;
             int freq = histograma[i].Repeticiones;
             
             if(freq == 0) continue;
             
-            // Si falta A y hay bases ambiguas que la representen
-            if(!tiene_A && (base == 'R' || base == 'M' || base == 'W' || base == 'D' || 
-                           base == 'H' || base == 'V' || base == 'N')) {
-                tiene_A = true;
-                tipos_bases++;
-            }
-            
-            // Si falta C y hay bases ambiguas que la representen
-            if(!tiene_C && (base == 'Y' || base == 'M' || base == 'S' || base == 'B' || 
-                           base == 'H' || base == 'V' || base == 'N')) {
-                tiene_C = true;
-                tipos_bases++;
-            }
-            
-            // Si falta G y hay bases ambiguas que la representen
-            if(!tiene_G && (base == 'R' || base == 'K' || base == 'S' || base == 'B' || 
-                           base == 'D' || base == 'V' || base == 'N')) {
-                tiene_G = true;
-                tipos_bases++;
-            }
-            
-            // Si falta T y hay bases ambiguas que la representen
-            if(!tiene_T && (base == 'Y' || base == 'K' || base == 'W' || base == 'B' || 
-                           base == 'D' || base == 'H' || base == 'N')) {
-                tiene_T = true;
-                tipos_bases++;
-            }
-            
-            // Si falta U y hay bases ambiguas que la representen
-            if(!tiene_U && (base == 'Y' || base == 'K' || base == 'W' || base == 'B' || 
-                           base == 'D' || base == 'H' || base == 'N')) {
-                tiene_U = true;
-                tipos_bases++;
+            switch(base){
+                case 'A': tiene_A = true; break;
+                case 'C': tiene_C = true; break;
+                case 'G': tiene_G = true; break;
+                case 'T': tiene_T = true; break;
+                case 'U': tiene_U = true; break;
+                // Bases ambiguas
+                case 'R': case 'Y': case 'S': case 'W': case 'K': 
+                case 'M': case 'B': case 'D': case 'H': case 'V': case 'N':
+                    tiene_ambiguas = true;
+                    break;
             }
         }
         
-        std::cout << "Secuencia " << it->GetNombre() << " contiene " << tipos_bases << " tipos de bases.\n";
+        // Contar bases estándar presentes
+        int tipos_bases = 0;
+        if(tiene_A) tipos_bases++;
+        if(tiene_C) tipos_bases++;
+        if(tiene_G) tipos_bases++;
+        if(tiene_T) tipos_bases++;
+        if(tiene_U) tipos_bases++;
+        
+        // Si hay bases ambiguas, usar "al menos" porque representan combinaciones adicionales
+        if(tiene_ambiguas) {
+            std::cout << "Secuencia " << it->GetNombre() << " contiene al menos " << tipos_bases << " tipos de bases.\n";
+        } else {
+            std::cout << "Secuencia " << it->GetNombre() << " contiene " << tipos_bases << " tipos de bases.\n";
+        }
     }
 }
 
