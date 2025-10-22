@@ -14,6 +14,7 @@
 #include <fstream>
 #include <sstream>
 #include <map>
+#include <iomanip>  
 
 
 // Método de codificación Huffman
@@ -156,17 +157,28 @@ void GestorDeGenomas::CodificarHuffman(std::string nombreArchivo){
     
     archivo.close();
     
-    // Calcular y mostrar estadísticas de compresión
-    std::ifstream archivoComprimido(nombreArchivo, std::ios::binary | std::ios::ate);
+    // CALCULAR ESTADÍSTICAS CORRECTAMENTE
+    std::ifstream archivoComprimido(direccion + nombreArchivo, std::ios::binary | std::ios::ate);
+    
+    if(!archivoComprimido.is_open()){
+        std::cout << "ERROR: No se pudo abrir el archivo comprimido para estadísticas\n";
+        return;
+    }
+    
     long long tamañoComprimido = archivoComprimido.tellg();
     archivoComprimido.close();
     
+    // Calcular estadísticas
     double tasaCompresion = (1.0 - (double)tamañoComprimido / (double)tamañoOriginalTotal) * 100.0;
+    double ratioCompresion = (double)tamañoOriginalTotal / (double)tamañoComprimido;
     
-    std::cout << "Codificacion exitosa: " << nombreArchivo << "\n";
+    std::cout << "=== ESTADÍSTICAS DE COMPRESIÓN ===\n";
+    std::cout << "Archivo: " << nombreArchivo << "\n";
     std::cout << "Tamaño original: " << tamañoOriginalTotal << " bytes\n";
     std::cout << "Tamaño comprimido: " << tamañoComprimido << " bytes\n";
-    std::cout << "Tasa de compresión: " << tasaCompresion << "%\n";
+    std::cout << "Espacio ahorrado: " << (tamañoOriginalTotal - tamañoComprimido) << " bytes\n";
+    std::cout << "Tasa de compresión: " << std::fixed << std::setprecision(2) << tasaCompresion << "%\n";
+    std::cout << "Ratio de compresión: " << std::fixed << std::setprecision(2) << ratioCompresion << ":1\n";
     
 
 }
@@ -359,19 +371,26 @@ bool GestorDeGenomas::CargarFASTA(std::string nombreArchivo){
                 }
             }
 
-            // Validar ancho consistente
+            // Validar ancho consistente PERMITIENDO que la última línea sea diferente
             bool anchoConsistente = true;
             if (!lineasSecuencia.empty()) {
                 size_t anchoReferencia = lineasSecuencia[0].length();
-                for (const std::string& lineaSeq : lineasSecuencia) {
-                    if (lineaSeq.length() != anchoReferencia) {
+                
+                // Verificar que todas las líneas excepto posiblemente la última tengan el mismo ancho
+                for (size_t i = 0; i < lineasSecuencia.size() - 1; i++) {
+                    if (lineasSecuencia[i].length() != anchoReferencia) {
                         anchoConsistente = false;
                         break;
                     }
                 }
+                
+                // La última línea puede ser más corta o más larga, pero no vacía
+                if (anchoConsistente && lineasSecuencia.back().empty()) {
+                    anchoConsistente = false;
+                }
             }
 
-            // Solo añadir si tiene ancho consistente
+            // Solo añadir si tiene ancho consistente (con la flexibilidad para la última línea)
             if (anchoConsistente && !lineasSecuencia.empty()) {
                 Secuencia S;
                 S.SetNombre(nombreSecuencia);
@@ -596,3 +615,4 @@ int GestorDeGenomas::Enmascarar_Subsecuencias(std::string Subsecuencia){
     }
     return Contador; // Devuelve el total enmascarado
 }
+
