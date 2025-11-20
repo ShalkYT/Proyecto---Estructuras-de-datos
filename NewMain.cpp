@@ -116,6 +116,7 @@ void ListarComandos(std::string parametros){
         std::cout << "Comandos disponibles:\n";
         std::cout << "·cargar \n·listar_secuencias \n·histograma \n·es_subsecuencia \n";
         std::cout << "·enmascarar \n·guardar \n·codificar \n·decodificar \n";
+        std::cout << "·ruta_mas_corta \n·base_remota \n";
         std::cout << "·ayuda \n·salir \n";
         std::cout << "Ingrese 'ayuda <comando>' para obtener ayuda sobre un comando específico.\n";
     } else {
@@ -167,10 +168,17 @@ void ProcesarComando(std::string comando, std::string parametros){
             std::cout << temp << " subsecuencias enmascaradas\n";
         }
     }
-    else if(comando == "salir"){
-        exit(0);
-    }
-    else {
-        std::cout << "Comando no reconocido\n";
-    }
+    else if(comando == "ruta_mas_corta"){
+        Gestor.ruta_mas_corta(parametros);
+        
+        }
+        else if(comando == "base_remota"){
+            std::cout<<"Implementar funcion de base remota\n";
+        }
+        else if(comando == "salir"){
+            exit(0);
+        }
+        else {
+            std::cout << "Comando no reconocido\n";
+        }
 }

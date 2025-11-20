@@ -51,7 +51,7 @@ public:
     // Asigna un genoma al objeto a partir de una secuencia de caracteres.
     void SetGenoma(std::deque<char> Genomas);
 
-    // Devuelve la secuencia completa del genoma.
+    // Devuelve la informacion completa del genoma.
     std::deque<char> GetGenomas();
 
     // Cuenta la cantidad total de bases en el genoma.

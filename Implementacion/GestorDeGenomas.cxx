@@ -589,3 +589,59 @@ int GestorDeGenomas::Enmascarar_Subsecuencias(std::string Subsecuencia){
     return Contador; // Devuelve el total enmascarado
 }
 
+void GestorDeGenomas::ruta_mas_corta(std::string parametros){
+    if(VectorSecuencias.empty()){ // Si no hay secuencias cargadas
+        std::cout << "No hay secuencias cargadas en memoria.\n";
+        return;
+    }
+
+    // Buscar el parametro de nombre de secuencia
+    size_t pos = parametros.find(' ');
+    std::string secuencia = parametros.substr(0,pos);
+
+    std::vector<Secuencia>::iterator it = VectorSecuencias.begin();
+
+    // Busca la secuencia con el nombre dado
+    for(; it != VectorSecuencias.end(); it++){
+        if(secuencia == (it->GetNombre())){ // Si encuentra coincidencia
+            break;
+        }
+    }
+    // Iterador que referencia a la secuencia solicitada
+    if(it == VectorSecuencias.end()){
+        std::cout << "la secuencia " << secuencia << "no existe. \n";
+        return;
+    }
+
+    int i,j,x,y;
+    pos = parametros.find(' ');
+    if(pos ==std::string::npos){
+        std::cout << "argumentos insuficientes\n";
+        return;
+    }
+    std::stringstream ss(parametros.substr(pos + 1));
+    if (!(ss >> i >> j >> x >> y)) {
+    std::cout << "Error: parámetros inválidos.\n";
+    return;
+    }
+    
+    ResultadoRuta resultado = it->ruta_mas_corta(i,j,x,y);
+    if(resultado.bases[0] == '1'){
+    std::cout << "La base en la posicion [" << resultado.i << "," << resultado.j << "] no existe.\n";
+    }
+    if(resultado.bases[1] == '1'){
+        std::cout << "La base en la posicion [" << resultado.x << "," << resultado.y << "] no existe.\n";
+    }   
+    std::vector<int> ruta = resultado.camino;
+    std::vector<int>::iterator resit = ruta.begin();
+    std::cout << "Para la secuencia " << resultado.secuencia;
+    std::cout << ", la ruta mas corta entre la base " << resultado.bases[0] << " en [" << resultado.i << "," << resultado.j << "]";
+    std::cout << " y la base "<< resultado.bases[1] << " en [" << resultado.x << "," << resultado.y << "] es: ";
+    for(; resit != (ruta.end()); resit++){
+        int fila = (*resit) / resultado.ancho;
+        int columna = (*resit) % resultado.ancho;
+        std::cout <<"[" << fila << ","<< columna << "] ";
+    }
+    std::cout << "El costo total de la ruta es: " << resultado.costo << "\n";
+
+}

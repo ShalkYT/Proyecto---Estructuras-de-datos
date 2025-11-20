@@ -104,3 +104,29 @@ int Secuencia::Enmascarar_Subsecuencias(std::string Subsecuencia){
     }
     return Contador; // Devuelve el total de subsecuencias enmascaradas
 }
+
+ResultadoRuta Secuencia::ruta_mas_corta(int i, int j, int x, int y){
+    // Crea un grafo tipo cuadricula que tiene en cuenta un ancho de linea del primer gen
+    
+    int anchoDeLinea = VectorGenomas[0].ContarBases();
+    grafo graf(anchoDeLinea);
+
+    std::vector<Genomas>::iterator vec = VectorGenomas.begin();
+    std::deque<char>::iterator deq;
+    
+    for(;vec != VectorGenomas.end();vec++){
+        std::deque<char> temp = vec->GetGenomas();
+        for(deq = temp.begin(); deq != temp.end(); deq++){
+            graf.insertarNodo(*deq);
+        }
+    }
+
+    ResultadoRuta resultado = graf.dijkstra(i,j,x,y);
+    resultado.ancho = anchoDeLinea;
+    resultado.secuencia = this->Nombre;
+    resultado.i = i;
+    resultado.j = j;
+    resultado.x = x;
+    resultado.j = j;
+    return resultado;
+}

@@ -81,6 +81,9 @@ public:
     
     // Enmascara (reemplaza con 'X') todas las ocurrencias de una subsecuencia
     int Enmascarar_Subsecuencias(std::string Subsecuencia);
+
+    // busca la secuencia en la cual se ejecutara el comando y le da los parametros necesarios para ejecutarse
+    void ruta_mas_corta(std::string parametros);
 };
 
 #endif // GESTORDEGENOMAS_H
