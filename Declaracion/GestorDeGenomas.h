@@ -84,6 +84,8 @@ public:
 
     // busca la secuencia en la cual se ejecutara el comando y le da los parametros necesarios para ejecutarse
     void ruta_mas_corta(std::string parametros);
+
+    void base_remota(std::string parametros);
 };
 
 #endif // GESTORDEGENOMAS_H

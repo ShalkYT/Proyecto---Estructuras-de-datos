@@ -71,23 +71,13 @@ double grafo::pesoEntre(int f1, int c1, int f2, int c2){
     return 1.0 / (1.0 + diff);
 }
 
-ResultadoRuta grafo::dijkstra(int f1, int c1, int f2, int c2){
-    ResultadoRuta resultado;
+resultadoDijkstra grafo::dijkstra(int f1, int c1){
 
-    if (!dentro(f1, c1)){
-        resultado.bases[0] = '1';
-        return resultado;
-    }
-    if (!dentro(f2, c2)){
-        resultado.bases[1] = '1';
-        return resultado;
-    }
+    resultadoDijkstra resultado;
 
     int n = nodos.size();
     int start = index(f1, c1);
-    int goal  = index(f2, c2);
-    resultado.bases[0] = (nodos[start]).valor;
-    resultado.bases[1] = (nodos[goal]).valor;
+    
 
     std::vector<float> dist(n, std::numeric_limits<float>::infinity());
     std::vector<int> prev(n, -1);
@@ -99,6 +89,7 @@ ResultadoRuta grafo::dijkstra(int f1, int c1, int f2, int c2){
         int u = -1;
         float minDist = std::numeric_limits<float>::infinity();
 
+        // Seleccionar el nodo con menor distancia dist[] que aún está en la cola
         for(int i = 0; i < n; i++){
             if(inQ[i] && dist[i] < minDist){
                 u = i;
@@ -106,24 +97,25 @@ ResultadoRuta grafo::dijkstra(int f1, int c1, int f2, int c2){
             }
         }
 
+        // Si no se encontró ningún nodo pendiente, se termina
         if(u == -1) break;
-        if(u == goal){
-            inQ[u] = false;
-            break;
-        }
 
         inQ[u] = false;
 
         int uf = nodos[u].fila;
         int uc = nodos[u].columna;
 
-        for(auto &vn : vecinos(uf, uc)){
+        // vecinos
+
+        std::vector<nodo_> vec = vecinos(uf, uc);
+        for(std::vector<nodo_>::iterator it = vec.begin(); it != vec.end(); ++it){
+            nodo_ vn = *it;
+
             int v = index(vn.fila, vn.columna);
 
             if(!inQ[v]) continue;
 
             double w = pesoEntre(uf, uc, vn.fila, vn.columna);
-
             if(w < 0) continue;
 
             float alt = dist[u] + w;
@@ -135,17 +127,44 @@ ResultadoRuta grafo::dijkstra(int f1, int c1, int f2, int c2){
         }
     }
 
-    if(dist[goal] == std::numeric_limits<float>::infinity())
+    resultado.dist = dist;
+    resultado.prev = prev;
+
+    return resultado;
+
+}
+
+ResultadoRuta grafo::ruta_mas_corta(int f1, int c1, int f2, int c2){
+
+    ResultadoRuta resultado;
+    if (!dentro(f1, c1)){
+        resultado.bases[0] = '1';
+        return resultado;
+    }
+    if (!dentro(f2, c2)){
+        resultado.bases[1] = '1';
+        return resultado;
+    }
+
+    resultadoDijkstra dijk = dijkstra(f1,c1);
+
+    int start = index(f1,c1);
+    int goal  = index(f2, c2);
+
+    resultado.bases[0] = (nodos[start]).valor;
+    resultado.bases[1] = (nodos[goal]).valor;
+
+    if(dijk.dist[goal] == std::numeric_limits<float>::infinity())
         return resultado;
 
-    resultado.costo = dist[goal];
+    resultado.costo = dijk.dist[goal];
 
     std::vector<int> camino;
     int actual = goal;
 
     while(actual != -1){
         camino.push_back(actual);
-        actual = prev[actual];
+        actual = dijk.prev[actual];
     }
 
     // invertir
@@ -155,8 +174,42 @@ ResultadoRuta grafo::dijkstra(int f1, int c1, int f2, int c2){
         camino[camino.size()-1-i] = tmp;
     }
 
+    resultado.a = f2;
+    resultado.b = c2;
+    resultado.ancho = anchoLinea;
+
     resultado.camino = camino;
     return resultado;
+}
+
+ResultadoRuta grafo::base_remota(int f1, int c1){
+
+    ResultadoRuta resultado;
+    if (!dentro(f1, c1)){
+        resultado.bases[0] = '1';
+        return resultado;
+    }
+
+    resultadoDijkstra dijk = dijkstra(f1, c1);
+
+    int start = index(f1, c1);
+    char base = nodos[start].valor;
+    int dist_max = 0;
+    int index_max = start;
+
+    for(int i = 0; i < nodos.size(); i++){
+        if(nodos[i].valor != base) continue;
+
+        if(dist_max < dijk.dist[i]){
+            dist_max = dijk.dist[i];
+            index_max = i;
+        }
+    }
+
+    int f2 = index_max / anchoLinea;
+    int c2 = index_max % anchoLinea;
+
+    return ruta_mas_corta(f1,c1,f2,c2);
 }
 
 void grafo::imprimir() {

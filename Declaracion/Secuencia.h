@@ -77,8 +77,12 @@ public:
     // Enmascara todas las ocurrencias de una subsecuencia en los genomas.
     int Enmascarar_Subsecuencias(std::string Subsecuencia);
 
+    grafo llenar_grafo();
+
     // Utiliza grafos y la funcion de dikstra para hallar la ruta mas corta y su costo
     ResultadoRuta ruta_mas_corta(int i, int j, int x, int y);
+
+    ResultadoRuta base_remota(int i, int j);
 
 private:
     std::vector<Genomas> VectorGenomas; // Colección de genomas que forman la secuencia.

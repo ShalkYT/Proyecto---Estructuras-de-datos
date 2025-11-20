@@ -171,14 +171,15 @@ void ProcesarComando(std::string comando, std::string parametros){
     else if(comando == "ruta_mas_corta"){
         Gestor.ruta_mas_corta(parametros);
         
-        }
-        else if(comando == "base_remota"){
-            std::cout<<"Implementar funcion de base remota\n";
-        }
-        else if(comando == "salir"){
-            exit(0);
-        }
-        else {
-            std::cout << "Comando no reconocido\n";
-        }
+    }
+    else if(comando == "base_remota"){
+        Gestor.base_remota(parametros);
+        std::cout<<"Implementar funcion de base remota\n";
+    }
+    else if(comando == "salir"){
+        exit(0);
+    }
+    else {
+        std::cout << "Comando no reconocido\n";
+    }
 }
