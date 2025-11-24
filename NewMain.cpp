@@ -174,7 +174,7 @@ void ProcesarComando(std::string comando, std::string parametros){
     }
     else if(comando == "base_remota"){
         Gestor.base_remota(parametros);
-        std::cout<<"Implementar funcion de base remota\n";
+        /*std::cout<<"Implementar funcion de base remota\n";*/
     }
     else if(comando == "salir"){
         exit(0);

@@ -197,7 +197,7 @@ ResultadoRuta grafo::base_remota(int f1, int c1){
     int dist_max = 0;
     int index_max = start;
 
-    for(int i = 0; i < nodos.size(); i++){
+    for(std::size_t i = 0; i < nodos.size(); i++){
         if(nodos[i].valor != base) continue;
 
         if(dist_max < dijk.dist[i]){

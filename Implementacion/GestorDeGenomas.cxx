@@ -638,13 +638,13 @@ void GestorDeGenomas::ruta_mas_corta(std::string parametros){
     std::vector<int>::iterator resit = ruta.begin();
     std::cout << "Para la secuencia " << secuencia;
     std::cout << ", la ruta mas corta entre la base " << resultado.bases[0] << " en [" << i << "," << j << "]";
-    std::cout << " y la base "<< resultado.bases[1] << " en [" << x << "," << y << "] es: ";
+    std::cout << " y la base "<< resultado.bases[1] << " en [" << x << "," << y << "] es:\n ";
     for(; resit != (ruta.end()); resit++){
         int fila = (*resit) / resultado.ancho;
         int columna = (*resit) % resultado.ancho;
         std::cout <<"[" << fila << ","<< columna << "] ";
     }
-    std::cout << "El costo total de la ruta es: " << resultado.costo << "\n";
+    std::cout << "\n El costo total de la ruta es: " << resultado.costo << "\n";
 
     return;
 }
@@ -698,13 +698,13 @@ void GestorDeGenomas::base_remota(std::string parametros){
     std::cout << "Para la secuencia " << secuencia << ", la base remota esta ubicada en ";
     std::cout << "[" << resultado.a << "," << resultado.b << "], y la ruta entre la base en ";
     std::cout << "[" << i << "," << j << "] y la base remota en " << "[" << resultado.a << "," << resultado.b << "] ";
-    std::cout << "es: ";
+    std::cout << "es: \n";
     for(; resit != (ruta.end()); resit++){
         int fila = (*resit) / resultado.ancho;
         int columna = (*resit) % resultado.ancho;
         std::cout <<"[" << fila << ","<< columna << "] ";
     }
-    std::cout << " El costo total de la ruta es: " << resultado.costo;
+    std::cout << "\n El costo total de la ruta es: " << resultado.costo << "\n";
 
     return;
 }
